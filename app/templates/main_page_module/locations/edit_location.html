@@ -1,0 +1,366 @@
+{% extends "main_page_module/base.html" %}
+
+
+{% block extraheader %}
+{% endblock %}
+
+{% block nav_new_entry %}active{% endblock nav_new_entry %}
+
+
+{% block flashes %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div>
+        {% for category, message in messages %}
+          {% if category == "error" %}
+            <div class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
+            <br>
+          {% else %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+            <br>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+{% endblock %}
+
+{% macro render_field(field, placeholder=None) %}
+      <div class="form-group">
+          {% set css_class = 'form-control ' + kwargs.pop('class', '') %}
+
+          {{ field.label }}
+
+          {% if field.errors %}
+              {% set css_class = css_class + ' is-invalid' %}
+
+              {% for error in field.errors %}
+                  
+                  <small id="{{ field.label.text }}" class="text-danger">
+                      {{ error }}
+                </small>
+
+              {% endfor %}
+              </ul>
+          {% endif %}
+
+          {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
+      </div>
+      {% endmacro %}
+
+
+{% block content%}
+
+<div class="container-fluid" style="background-color: rgb(255, 255, 255)">
+  <br>  
+
+  <div class="row">
+    <div class="col-md">
+      <hr>
+      <h5>Parking</h5>
+      <button class="btn btn-outline-warning btn-block" onclick="getLocation()">Pridobi koordinate </button>
+      <p id="demo"></p>
+      <script>
+        var x = document.getElementsByName("coord");
+        
+        function getLocation() {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+          } else { 
+            x[0].value = "Geolocation is not supported by this browser.";
+          }
+        }
+        
+        function showPosition(position) {
+          x[0].value = position.coords.latitude + "," + position.coords.longitude;
+        }
+        </script>
+      <form method="POST" action="{{ url_for('main_page_module.add_parking') }}" accept-charset="UTF-8" role="form">
+        {{ form.id }}
+        {{ form_parking.csrf_token }}
+        {{ render_field(form_parking.name, placeholder="Parking name") }}
+        {{ render_field(form_parking.price) }}
+        {{ render_field(form_parking.coord, placeholder="Parking coordinates") }}
+        <input type="submit" class="btn btn-success btn-block" name="submit" value="Dodaj Parking">
+
+      </form>
+      <hr>
+      <div class="card" >
+        <ul class="list-group list-group-flush" id="parkings">
+          {% if ( parkings|length != 0) %}
+          {% for i in parkings%}
+              <li class="list-group-item" id="{{ i[0] ~ 'park' }}"><a href="https://www.google.com/maps/search/?api=1&query={{ i[3] }}" target="_blank">{{ i[1] }} - {% if ( i[2] == 0) %}Free{% elif ( i[2] == 0) %}Cheap{% else %}Expensive{% endif %}</a>
+                <button type="button" class="close" aria-label="Close" id="{{ i[0] ~ 'park' }}" onclick="remove_parking(this.id)">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </li>
+          {% endfor %}
+        {% else %}
+          <h5>No added parkings</h5>
+        {% endif %}
+        <ul>
+      </div>
+      
+    </div>
+    <div class="col-md-6">
+      <a href="{{ url_for('main_page_module.view_location', location_id=form.id.data) }}" class="btn btn-outline-info btn-block" role="button">View</a>
+
+      <div>
+        <div>
+          <br>
+          <form method="POST" action="{{ url_for('main_page_module.change_location') }}" accept-charset="UTF-8" role="form">
+          {{ form.csrf_token }}
+          {{ form.id }}
+          {{ render_field(form.name, placeholder="Enter the name of the location",
+                                      autofocus="") }}
+          {{ render_field(form.desc_s, placeholder="We need a short description") }}
+          <div class="container">
+            <div class="row">
+              <div class="col-2">
+                <img id="icon_image" src="{{ url_for('static', filename='icons/' + icon_get_one(form.icon.data)[2]) }}" class="rounded float-left" alt="..." style="width: 100px; height: 100px;">
+              </div>
+              <div class="col-10">
+                {{ render_field(form.icon, placeholder="Select if the location Icon") }}
+              </div>
+            </div>
+          </div>
+          <br>
+          {{ render_field(form.desc_l, placeholder="Write the long description", rows='3') }}
+          {{ render_field(form.rating, placeholder="Select a Rate") }}
+          {{ render_field(form.tts, placeholder="We need a username for your account") }}
+          {{ render_field(form.coord, placeholder="Insert coordinates") }}
+          {{ render_field(form.mtld, placeholder="Select a Difficulty") }}
+          {{ render_field(form.contact, placeholder="Give us a contact") }}
+          {{ render_field(form.timetable, placeholder="When can we visit it?", rows='3') }}
+          {{ render_field(form.fee, placeholder="Select if the location has fees.") }}
+          {{ render_field(form.child, placeholder="Select if the location is suitable for children") }}
+          {{ render_field(form.season, placeholder="Select if the location is season dependant") }}
+
+          <br>
+          <input type="submit" class="btn btn-primary btn-block" name="submit" value="Submit Edits">
+
+          </form>
+        </div>
+      </div>
+      <br>
+
+    </div>
+    <div class="col-md">
+      <hr>
+      <h5>Oznake</h5>
+      <button class="btn btn-outline-success btn-block" title="Tag button" data-toggle="modal" data-target="#tagModal">Dodaj Oznake</button>
+      <hr>
+
+      <div class="card" >
+        <ul class="list-group list-group-flush" id="tag">
+          {% if ( tags|length != 0) %}
+          {% for i in tags%}
+              <li class="list-group-item" id="{{ i[0] ~ 'loc_tag' }}"><a href="{{ url_for('main_page_module.view_tag', tag_id=i[2]) }}"><span class="badge badge-pill badge-dark">{{ i[4] }}</span></a>
+                <button type="button" class="close" aria-label="Close" id="{{ i[0] ~ 'loc_tag' }}" onclick="remove_tag(this.id)">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </li>
+          {% endfor %}
+        {% else %}
+          <h5>No added Tags</h5>
+        {% endif %}
+
+        </ul>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="tagModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalLabel">Oznake</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="loc_id" value="{{ form.id.data }}">
+              <div class="input-group">
+                <div class="input-group-append">
+                  <select class="custom-select" id="choosen_tag">
+                    {% for tag in all_tags %}
+                      <option value="{{ tag[0] }}">{{ tag[1] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <button type="button" class="form-control btn btn-outline-info" onclick="add_tag()">Dodaj Oznako</button>
+              </div>
+              <hr>
+                <form method="POST" action="{{ url_for('main_page_module.create_tag') }}" accept-charset="UTF-8" role="form">
+                  {{ form.id }}
+                  {{ form_tag.csrf_token }}
+                  {{ render_field(form_tag.name, placeholder="Ime oznake") }}
+                  <input type="submit" class="btn btn-success btn-block" name="submit" value="Create tag">
+          
+                </form>
+
+            </div>
+        </div>
+      </div>
+    </div>
+
+  <script>
+    function add_tag(){
+
+      var loc_id = document.getElementById("loc_id");
+      loc_id = loc_id.value
+
+      var tag_selector = document.getElementById("choosen_tag");
+      var tag_id = tag_selector.options[tag_selector.selectedIndex].value;
+
+
+      $.post('/add_tag/', {"loc_id": loc_id, "tag_id": tag_id}, function(data, textStatus) {
+        //console.log(data["a"]);
+        var snackbar = document.getElementById("snackbar");
+
+        if (data["a"] == "OK"){
+          //console.log(returned_data);
+          snackbar.innerHTML = "Tag Added to the Location";
+
+
+        } else if (data["a"] == "KO"){
+          snackbar.innerHTML = "Tag already added";
+
+        } else {
+          snackbar.innerHTML = "Error while adding the Tag";
+        }
+
+        show_snackbar();
+        
+
+      }, "json");
+
+      };
+
+
+    function remove_tag(loc_tag_id){
+
+      loc_tag_id = loc_tag_id.replace('loc_tag','');
+
+      $.post('/remove_tag/', {"loc_tag_id": loc_tag_id}, function(data, textStatus) {
+        //console.log(data["a"]);
+        var snackbar = document.getElementById("snackbar");
+
+        if (data["a"] != "-1"){
+          //console.log(returned_data);
+          snackbar.innerHTML = "Tag removed";
+
+          var tag_div = document.getElementById(loc_tag_id + "loc_tag");
+
+          tag_div.remove();
+
+        } else {
+          snackbar.innerHTML = "Error while removing the Tag";
+        }
+
+        show_snackbar();
+        
+
+      }, "json");
+
+    };
+
+
+    function remove_parking(parking_id){
+
+      parking_id = parking_id.replace('park','');
+
+      $.post('/remove_parking/', {"parking_id": parking_id}, function(data, textStatus) {
+        //console.log(data["a"]);
+        var snackbar = document.getElementById("snackbar");
+
+        if (data["a"] != "-1"){
+          //console.log(returned_data);
+          snackbar.innerHTML = "Parking removed";
+
+          var parking_div = document.getElementById(parking_id + "park");
+
+          parking_div.remove();
+
+        } else {
+          snackbar.innerHTML = "Error while adding the Notation";
+        }
+
+        show_snackbar();
+        
+
+      }, "json");
+
+    };
+
+    function show_snackbar() {
+      // Get the snackbar DIV
+      var x = document.getElementById("snackbar");
+
+      // Add the "show" class to DIV
+      x.className = "show";
+
+      // After 3 seconds, remove the show class from DIV
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+  </script>
+
+
+  <div id="snackbar">Notation added</div>
+
+  <style>
+  /* The snackbar - position it at the bottom and in the middle of the screen */
+    #snackbar {
+      visibility: hidden; /* Hidden by default. Visible on click */
+      min-width: 250px; /* Set a default minimum width */
+      margin-left: -125px; /* Divide value of min-width by 2 */
+      background-color: #333; /* Black background color */
+      color: #fff; /* White text color */
+      text-align: center; /* Centered text */
+      border-radius: 2px; /* Rounded borders */
+      padding: 16px; /* Padding */
+      position: fixed; /* Sit on top of the screen */
+      z-index: 1; /* Add a z-index if needed */
+      left: 50%; /* Center the snackbar */
+      bottom: 30px; /* 30px from the bottom */
+    }
+
+    /* Show the snackbar when clicking on a button (class added with JavaScript) */
+    #snackbar.show {
+      visibility: visible; /* Show the snackbar */
+      /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+      However, delay the fade out process for 2.5 seconds */
+      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    /* Animations to fade the snackbar in and out */
+    @-webkit-keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+    }
+
+    @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+    }
+
+    @-webkit-keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+
+    @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+  </style>
+
+{% endblock %}

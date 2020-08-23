@@ -1,0 +1,138 @@
+{% extends "main_page_module/base.html" %}
+
+{% block extraheader %}
+{% endblock extraheader  %}
+
+{% block nav_all_locations %}active{% endblock nav_all_locations %}
+
+
+{% block flashes %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div>
+        {% for category, message in messages %}
+          {% if category == "error" %}
+            <div class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
+          {% else %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <br>
+    {% endif %}
+  {% endwith %}
+{% endblock flashes %}
+
+
+{% block content%}
+<br>
+<div class="container-fluid" style="background-color: rgb(255, 255, 255)">
+  <br>  
+
+  <div class="row">
+    <div class="col-md text-center">
+      <h5>Options</h5>
+      {% if session['user_id'] %}
+      <hr>
+        <button class="btn btn-outline-warning my-2 my-sm-0" id="update_db_b" onclick="update_db_f()">Update Search </button>
+      <hr>
+      <div id="updateingSearch_myth"></div>
+
+      <script>
+        function update_db_f(){
+            $("#updateingSearch_myth").empty();
+            document.getElementById("update_db_b").disabled = true;
+      
+            var loadingSpinner = document.createElement("div");
+            loadingSpinner.setAttribute('class', 'd-flex align-items-center');
+            loadingSpinner.innerHTML = "<b>Posodabljanje baze z novimi Pripovedkami...</b>";
+      
+            var insideSpinner = document.createElement("div");
+            insideSpinner.setAttribute('class', 'spinner-border ml-auto');
+            insideSpinner.setAttribute('role', 'status');
+            insideSpinner.setAttribute('aria-hidden', 'true');
+      
+            loadingSpinner.appendChild(insideSpinner);
+            document.getElementById("updateingSearch_myth").appendChild(loadingSpinner);
+
+            $.post('/update_myth_search/', {"update": "update"}, function(data, textStatus) {
+              //console.log(data["a"]);
+      
+              if (data["a"] != "-1"){
+                //console.log(returned_data);
+                loadingSpinner.innerHTML = "<b>Pripovedke posodobljene!</b";
+      
+              } else {
+                loadingSpinner.innerHTML = "Error while updating the Database";
+              }
+                    
+      
+            }, "json");
+      
+            
+      
+        }
+      </script>
+      {% endif %}
+    </div>
+    <div class="col-md-6">
+
+      <legend>Vse Pripovedke</legend>
+      <div id="all_myths" class="container">
+        {% for i in myths%}
+        <hr>
+        <div class="media">
+          <a href="{{ url_for('main_page_module.view_myth', myth_id=i[0]) }}">
+            <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons//myth.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+          </a>
+          <div class="media-body">
+            <h4 class="mt-0">{{ i[1] }}</h4>
+            <p>{{ i[2] }}</p>
+          </div>
+          {% if session['user_id'] %}
+          <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#{{ 'for_modal' ~ i[0] }}">Odstrani</button>
+          {% endif %}
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="{{ 'for_modal' ~ i[0] }}" tabindex="-1" role="dialog" aria-labelledby="{{ i[0] ~ 'for_modaltext' }}" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="{{ i[0] ~ 'for_modaltext' }}">Izbrisi Pripovedko</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Ali hoce res izbrisati Pripovedko "{{ i[1] }}" ?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zapri</button>
+                
+                <form method="POST" action="{{ url_for('main_page_module.delete_myth') }}" accept-charset="UTF-8" role="form">
+                  <input type="hidden" id="id" name="id" value="{{ i[0] }}">
+                  <button type="submit" class="btn btn-danger">Odstrani Pripovedko</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% endfor %}
+      </div>
+
+      <hr>
+
+    </div>
+    <div class="col-md">
+      <!-- insert column here -->
+    </div>
+  </div>
+
+</div>
+{% endblock content %}

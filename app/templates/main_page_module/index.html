@@ -1,0 +1,219 @@
+{% extends "main_page_module/base.html" %}
+
+{% block extraheader %}
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/css/ol.css" type="text/css">
+<link rel="stylesheet" href="{{ url_for('static', filename='openlayers/styles.css') }}" type="text/css">
+
+
+{% endblock extraheader  %}
+
+{% block nav_index %}active{% endblock nav_index %}
+
+
+{% block flashes %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div>
+        {% for category, message in messages %}
+          {% if category == "error" %}
+            <div class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
+            <br>
+          {% else %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+            <br>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+{% endblock flashes %}
+
+
+{% block content%}
+<br>
+<div class="container-fluid" style="background-color: rgb(255, 255, 255)">
+  <br>  
+
+  <div class="row">
+    <div class="col-md-3">
+      <a id="link_to_loc" href="#"><img id="big_image" src="{{ url_for('static', filename='placeholder.png') }}" class="img-fluid rounded "></a>
+      <hr>
+      <div class="media">
+        <img id="loc_icon_small" src="{{ url_for('static', filename='placeholder.png') }}" class="mr-3" alt="..." width="64" height="64">
+        <div class="media-body">
+          <h5 id="loc_name_h5" class="mt-0">Ime lokacije</h5>
+          <p id="loc_desc_p">
+            Opis lokacije
+          </p>
+        </div>
+      </div>
+      <hr>
+
+      <form method="POST" action="{{ url_for('main_page_module.index') }}" accept-charset="UTF-8" role="form">
+        <div class="input-group">
+          <select class="custom-select" name="rating">
+            <option value="99" selected>Vse Ocene</option>
+              <option value="0">1/5 - Če imaš čas, obišči enkrat</option>
+              <option value="1">2/5 - Nič posebnega, vendar lepo za videt</option>
+              <option value="2">3/5 - Vredno ogleda, če imaš čas</option>
+              <option value="3">4/5 - Obišči, ne bo ti žal</option>
+              <option value="4">5/5 - Zelo vredno! Ustavi se in obišči!</option>
+          </select>
+          <select class="custom-select" name="tag">
+            <option value="999999" selected>Vse Oznake</option>
+              {% for tag in tags %}
+              <option value="{{ tag[0] }}">{{ tag[1] }}</option>
+              {% endfor %}
+          </select>
+          <div class="input-group-append">
+            <input type="submit" class="btn btn-outline-secondary" value="Filtriraj">
+          </div>
+        </div>
+      </form>
+
+    </div>
+    <div class="col-md">
+      <div id="js-map" class="map"></div>
+      
+      <!-- Popup -->
+      <div id="popup" title=""></div>
+
+
+    </div>
+
+</div>
+
+</div>
+
+<script>
+  const map = new ol.Map({
+    view: new ol.View({
+        center: ol.proj.fromLonLat([14.7385152,46.1240465]),
+        zoom: 8.8
+    }),
+    layers: [
+        new ol.layer.Tile({
+            source: new ol.source.OSM()
+        })
+    ],
+    target: "js-map"
+  })
+
+  {% for i in locations%}
+
+
+  var iconFeature = new ol.Feature({
+    loc_id: "{{ i[0] }}",
+    name: "{{ i[1] }}",
+    desc: "{{ i[2] }}",
+    icon: "{{ i[3] }}",
+    geometry: new ol.geom.Point(ol.proj.fromLonLat([{{ i[4].split(",")[1] }}, {{ i[4].split(",")[0]  }}]))
+  });
+  
+
+var iconStyle = new ol.style.Style({
+    image: new ol.style.Icon({
+      anchor: [0.5, 46],
+      scale: 0.07,
+      anchorXUnits: 'fraction',
+      anchorYUnits: 'pixels',
+      src: '/static/icons/{{ i[3] }}',
+      //img: getVectorImage('/static/icons/hill.svg', 50),
+      //imgSize: [50, 50]
+    }),
+  });
+  
+  iconFeature.setStyle(iconStyle);
+  
+  var vectorSource = new ol.source.Vector({
+    features: [iconFeature],
+  });
+  
+  var vectorLayer = new ol.layer.Vector({
+    source: vectorSource,
+  });
+
+
+  map.addLayer(vectorLayer);
+  {% endfor %}
+
+  //on hover logic
+  /*
+  const popoverTextElement = document.getElementById('popover-text');
+  const popoverTextLayer = new ol.Overlay({
+    element: popoverTextElement,
+    positioning: 'bottom-center',
+    stopEvent: false
+  })
+  map.addOverlay(popoverTextLayer);
+  */
+
+  // Popup showing the position the user clicked
+  var popup = new ol.Overlay({
+    element: document.getElementById('popup'),
+  });
+  map.addOverlay(popup);
+
+  map.on('pointermove', function(evt){
+    let isFeatureAtPixel = map.hasFeatureAtPixel(evt.pixel);
+    var element = popup.getElement();
+
+    if(isFeatureAtPixel){
+      let featureAtPixel = map.getFeaturesAtPixel(evt.pixel);
+      let featureName = featureAtPixel[0].get('name');
+      //popoverTextLayer.setPosition(evt.coordinate);
+      //popoverTextElement.innerHTML = featureName;
+
+      popup.setPosition(evt.coordinate);
+      $(element).popover({
+        container: element,
+        placement: 'top',
+        animation: false,
+        html: true,
+        title: featureName,
+        //content: '<p>' + featureName + '</p>'
+      });
+      $(element).popover('show');
+      map.getViewport().style.cursor = 'pointer'
+    } else {
+      //popoverTextLayer.setPosition(undefined);
+      $(element).popover('dispose');
+      map.getViewport().style.cursor = ''
+    }
+  })
+
+  //map click logic
+  const locationBigImage = document.getElementById('big_image');
+  const locationLink = document.getElementById('link_to_loc');
+  const locationIcon = document.getElementById('loc_icon_small');
+  const locationName = document.getElementById('loc_name_h5');
+  const locationDesc = document.getElementById('loc_desc_p');
+  const mapView = map.getView();
+
+  map.on('singleclick', function(evt){
+    map.forEachFeatureAtPixel(evt.pixel, function(feature, layer){
+      console.log(feature);
+      mainLogic(feature)
+    })
+  })
+
+  function mainLogic(feature){
+    let featureId = feature.get('loc_id')
+    let featureName = feature.get('name')
+    let featureDesc = feature.get('desc')
+    let featureIcon = feature.get('icon')
+
+    locationBigImage.setAttribute('src', '/static/icons/' + featureIcon);
+    locationLink.setAttribute('href', '/view_location/' + featureId);
+    locationIcon.setAttribute('src', '/static/icons/' + featureIcon);
+    locationName.textContent = featureName;
+    locationDesc.textContent = featureDesc;
+  }
+
+</script>
+{% endblock content %}

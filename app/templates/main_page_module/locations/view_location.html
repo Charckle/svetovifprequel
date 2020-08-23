@@ -1,0 +1,402 @@
+{% extends "main_page_module/base.html" %}
+
+{% block extraheader %}
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/css/ol.css" type="text/css">
+<link rel="stylesheet" href="{{ url_for('static', filename='openlayers/styles_2.css') }}" type="text/css">
+{% endblock extraheader  %}
+
+
+{% block flashes %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div>
+        {% for category, message in messages %}
+          {% if category == "error" %}
+            <div class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
+          {% else %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <br>
+    {% endif %}
+  {% endwith %}
+{% endblock flashes %}
+
+
+{% block content%}
+
+
+<div class="container-fluid" style="background-color: rgb(255, 255, 255)">
+  <br>
+
+  <div class="row">
+    <div class="col-md-3 text-center">
+
+      <div class="card" >
+        <div class="card-header">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/parking.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+
+          Parking
+        </div>
+        <ul class="list-group list-group-flush">
+          {% if ( parkings|length != 0) %}
+            {% for i in parkings%}
+                <li class="list-group-item" id="{{ i[0] ~ 'park' }}"><a href="#koordinateDiv" >{{ i[1] }} - {% if ( i[2] == 0) %}Zastonj{% elif ( i[2] == 0) %}Poceni{% else %}Drago{% endif %}</a>
+                </li>
+            {% endfor %}
+          {% else %}
+            <h5>No added parkings</h5>
+          {% endif %}
+
+        </ul>
+      </div>
+
+    </div>
+    <div class="col-md-6">
+
+      <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+          <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+          <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item active ">
+            <img src="{{ url_for('static', filename='background.jpg') }}" class="d-block w-100" alt="..." style="width:640px;height:360px">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Tukaj bo ena slika lokacije</h5>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="{{ url_for('static', filename='placeholder.png') }}" class="d-block w-100" alt="..." style="width:640px;height:360px">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Tukaj druga</h5>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="{{ url_for('static', filename='placeholder.png') }}" class="d-block w-100" alt="..." style="width:640px;height:360px">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Tukaj pa tretja!</h5>
+            </div>
+          </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+      
+
+      <hr>
+
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/' + icon_get_one(location[13])[2]) }}" class="rounded float-left" alt="..." style="width: 65px; height: 65px;">
+        <div class="media-body">
+          <h3>{{ location[1] }}</h3>
+            <p><b>{{ location[2] }}</b></p>
+        </div>
+      </div>
+      
+      <hr>
+
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/star.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <h6>Ali je Lokacija vredna ogleda?</h6>
+          <p><b>{% if ( location[4] == 0) %}1/5 - Če imaš čas, obišči enkrat{% elif ( location[4] == 1) %}2/5 - Nič posebnega, vendar lepo za videt{% elif (location[4] == 2) %}3/5 - Vredno ogleda, če imaš čas{% elif (location[4] == 3) %}4/5 - Obišči, ne bo ti žal{% else %}5/5 - Zelo vredno! Ustavi se in obišči!{% endif %}</b></p>
+        </div>
+      </div>
+      
+      <hr>
+
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/description.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <p>{{ location[3] }}</p>
+        </div>
+      </div>
+
+     
+
+      <hr>
+
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/chronometer.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <h6>Čas, katerega lahko kvalitetno preživimo na Lokaciji</h6>
+          <p><b>{{ location[5] }} Minut</b></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/hard_climb.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <h6>Maksimalna težavnost za na Lokacijo</h6>
+          <p><b>{% if ( location[7] == 0) %}PP0 - Lahko, ni vredno omembe{% elif (location[7] == 1) %}PP1 - Miren sprehod{% elif (location[7] == 2) %}PP2 - Pot, na določenih mestih zavarovana{% elif (location[7] == 3) %}PP3 - Zavarovana plezalna pot, vendar ne izpostavljena. Potrebna je fizična moč{% elif (location[7] == 4) %}PP4 - Navpična, zavarovana plezalna pot{% elif (location[7] == 5) %}PP5 - V praksi navadno plezanje, s feratami{% else %}PP6 - Kot 5, le da težje in bolj navpično{% endif %}</b></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/card.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <h6>Kontakt za Lokacijo</h6>
+          <p><b>{{ location[8] }}</b></p>
+        </div>
+      </div>
+
+      <hr>
+
+      
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/timetable.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <h6>Urnik Lokacije</h6>
+          <p><b>{{ location[9] }}</b></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/ticket.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <h6>Vstopnina Lokacije</h6>
+          <p><b>{% if ( location[10] == 0) %}Ne{% elif (location[10] == 1) %}Odvisno{% else %}Da{% endif %}</b></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/family.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <h6>Ali je Lokacija primerna za Otroke</h6>
+          <p><b>{% if ( location[11] == 0) %}Ne{% else %}Da{% endif %}</b></p>
+        </div>
+      </div>
+      
+      <hr>
+
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/season.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <h6>Ali je Obisk Lokacije odvisen od letnega časa</h6>
+          <p><b>{% if ( location[12] == 0) %}Ne{% else %}Da{% endif %}</b></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/coordinates.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <h6 id="koordinateDiv">Koordinate Lokacije</h6>
+          <p><a href="https://www.google.com/maps/search/?api=1&query={{ location[6] }}" target="_blank"><b>{{ location[6] }}</b></a></p>
+          <div id="js-map" class="map"></div>
+          
+          <!-- Popup -->
+          <div id="popup" title=""></div>
+        </div>
+      </div>
+
+      <hr>
+
+      {% if session['user_id'] %}
+      <hr>
+      <a href="{{ url_for('main_page_module.edit_location', location_id=location[0]) }}" class="btn btn-outline-info btn-block" role="button">Edit</a>
+      <hr>
+      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{ 'for_modal' ~ location[0] }}">Delete</button>
+      <!-- Modal -->
+      <div class="modal fade" id="{{ 'for_modal' ~ location[0] }}" tabindex="-1" role="dialog" aria-labelledby="{{ location[0] ~ 'for_modaltext' }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="{{ location[0] }} ~ 'for_modaltext' }}">Delete the Location</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Do you really want to Delete the Location "{{ location[1] }}" ?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              
+              <form method="POST" action="{{ url_for('main_page_module.delete_location') }}" accept-charset="UTF-8" role="form">
+                <input type="hidden" id="id" name="id" value="{{ location[0] }}">
+                <button type="submit" class="btn btn-danger">Delete Location</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    <div class="col-md text-center">
+      
+      <div class="card" >
+        <div class="card-header">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/tag.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+
+          Oznake
+        </div>
+        <ul class="list-group list-group-flush" id="tags">
+          {% if ( tags|length != 0) %}
+          {% for i in tags%}
+              <li class="list-group-item" id="{{ i[0] ~ 'loc_tag' }}">
+                <a href="{{ url_for('main_page_module.view_tag', tag_id=i[2]) }}"><span class="badge badge-pill badge-dark">{{ i[4] }}</span></a>
+              </li>
+          {% endfor %}
+        {% else %}
+          <h5>Nobene Oznake</h5>
+        {% endif %}
+
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  
+  </div>
+  <br>
+
+  <script>
+    const map = new ol.Map({
+      view: new ol.View({
+          center: ol.proj.fromLonLat([{{ location[6].split(",")[1] }}, {{ location[6].split(",")[0]  }}]),
+          zoom: 15
+      }),
+      layers: [
+          new ol.layer.Tile({
+              source: new ol.source.OSM()
+          })
+      ],
+      target: "js-map"
+    })
+
+    
+
+      //add parkings on map
+      {% for i in parkings%}
+
+        var iconFeature = new ol.Feature({
+          name: "{{ i[1] }}",
+          paragraf: "{% if ( i[2] == 0) %}Zastonj{% elif ( i[2] == 0) %}Poceni{% else %}Drago{% endif %}",
+          icon: "/static/icons/{% if ( i[2] == 0) %}parking.svg{% else %}parking_pay.svg{% endif %}",
+          geometry: new ol.geom.Point(ol.proj.fromLonLat([{{ i[3].split(",")[1] }}, {{ i[3].split(",")[0]  }}]))
+        });
+        
+
+        var iconStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+              anchor: [0.5, 46],
+              scale: 0.07,
+              anchorXUnits: 'fraction',
+              anchorYUnits: 'pixels',
+              src: "/static/icons/{% if ( i[2] == 0) %}parking.svg{% else %}parking_pay.svg{% endif %}",
+              //img: getVectorImage('/static/icons/hill.svg', 50),
+              //imgSize: [50, 50]
+            }),
+          });
+          
+          iconFeature.setStyle(iconStyle);
+          
+          var vectorSource = new ol.source.Vector({
+            features: [iconFeature],
+          });
+          
+          var vectorLayer = new ol.layer.Vector({
+            source: vectorSource,
+          });
+
+
+          map.addLayer(vectorLayer);
+      {% endfor %}
+
+      //add location on map
+    var iconFeature = new ol.Feature({
+      name: "{{ location[1] }}",
+      paragraf: "",
+      icon: "{{ url_for('static', filename='icons/' + icon_get_one(location[13])[2]) }}",
+      geometry: new ol.geom.Point(ol.proj.fromLonLat([{{ location[6].split(",")[1] }}, {{ location[6].split(",")[0]  }}]))
+    });
+    
+  
+  var iconStyle = new ol.style.Style({
+      image: new ol.style.Icon({
+        anchor: [0.5, 46],
+        scale: 0.07,
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        src: '{{ url_for('static', filename='icons/' + icon_get_one(location[13])[2]) }}',
+        //img: getVectorImage('/static/icons/hill.svg', 50),
+        //imgSize: [50, 50]
+      }),
+    });
+    
+    iconFeature.setStyle(iconStyle);
+    
+    var vectorSource = new ol.source.Vector({
+      features: [iconFeature],
+    });
+    
+    var vectorLayer = new ol.layer.Vector({
+      source: vectorSource,
+    });
+  
+  
+    map.addLayer(vectorLayer);
+    //add location on map DONE
+
+      // Popup showing the position the user clicked
+        var popup = new ol.Overlay({
+          element: document.getElementById('popup'),
+        });
+        map.addOverlay(popup);
+
+        map.on('pointermove', function(evt){
+          let isFeatureAtPixel = map.hasFeatureAtPixel(evt.pixel);
+          var element = popup.getElement();
+
+          if(isFeatureAtPixel){
+            let featureAtPixel = map.getFeaturesAtPixel(evt.pixel);
+            let featureName = featureAtPixel[0].get('name');
+            let featureContent = featureAtPixel[0].get('paragraf');
+            
+            //popoverTextLayer.setPosition(evt.coordinate);
+            //popoverTextElement.innerHTML = featureName;
+
+            popup.setPosition(evt.coordinate);
+            $(element).popover({
+              container: element,
+              placement: 'top',
+              animation: false,
+              html: true,
+              title: featureName,
+              content: '<p>' + featureContent + '</p>'
+            });
+            $(element).popover('show');
+            map.getViewport().style.cursor = 'pointer'
+          } else {
+            //popoverTextLayer.setPosition(undefined);
+            $(element).popover('dispose');
+            map.getViewport().style.cursor = ''
+          }
+        })
+
+  </script>
+{% endblock content %}

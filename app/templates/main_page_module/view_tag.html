@@ -1,0 +1,69 @@
+{% extends "main_page_module/base.html" %}
+
+{% block extraheader %}
+{% endblock extraheader  %}
+
+
+{% block flashes %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div>
+        {% for category, message in messages %}
+          {% if category == "error" %}
+            <div class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
+          {% else %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <br>
+    {% endif %}
+  {% endwith %}
+{% endblock flashes %}
+
+
+{% block content%}
+<br>
+<div class="container-fluid" style="background-color: rgb(255, 255, 255)">
+  <br>  
+
+  <div class="row">
+    <div class="col-md-3 text-center">
+      <h5>Options</h5>
+
+    </div>
+    <div class="col-md-6">
+
+      
+      <legend>{{ tag[1] }}
+      
+      </legend>
+
+
+      {% for i in locations%}
+        <hr>
+        <div class="media">
+          <a href="{{ url_for('main_page_module.view_location', location_id=i[0]) }}">
+            <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/' + i[3]) }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+          </a>
+          <div class="media-body">
+            <h4 class="mt-0">{{ i[1] }}</h4>
+            <p>{{ i[2] }}</p>
+          </div>
+
+        </div>
+      {% endfor %}
+
+    </div>
+    <div class="col-md">
+      
+
+    </div>
+  </div>
+  
+  </div>
+{% endblock content %}

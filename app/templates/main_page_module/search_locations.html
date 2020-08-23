@@ -1,0 +1,160 @@
+{% extends "main_page_module/base.html" %}
+
+{% block extraheader %}
+{% endblock extraheader  %}
+
+{% block nav_search %}active{% endblock nav_search %}
+
+
+{% block flashes %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div>
+        {% for category, message in messages %}
+          {% if category == "error" %}
+            <div class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
+            <br>
+          {% else %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+            <br>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+{% endblock flashes %}
+
+
+{% block content%}
+<br>
+<div class="container-fluid" style="background-color: rgb(255, 255, 255)">
+  <br>  
+
+  <div class="row">
+    <div class="col-md">
+      <!-- insert column here -->
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Lokacije</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('main_page_module.search_myths') }}">Pripovedke</a>
+        </li>
+      </ul>
+
+      <hr>
+      <h1>Isces Lokacijo?</h1>
+      <span class="badge badge-success">Stevilo Lokacij na spletni strani: {{ location_numbers }}</span>
+      <span class="badge badge-danger">Stevilo razlicnih zvrsti Lokacij: {{ tag_numbers }}</span>
+      <br>
+      <br>
+
+      <div class="input-group">
+        <input class="form-control" id ="search" type="search" placeholder="Isci" size="50" aria-label="Search" autofocus="">
+        <div class="input-group-append">
+          <select class="custom-select" id="choosen_tag">
+            <option value="choosen_tag" selected>Vse Oznake</option>
+            {% for tag in all_tags %}
+            <option value="{{ tag[0] }}">{{ tag[1] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <hr>
+      <div class="container">
+        <div id="results">
+          <h4>Pozdrav!</h4>
+          <p>Ta spletna stran poskusa agregirati lokacije za kvalitetno koriscenje prostega casa.</p>
+          <p><b>Zdaj isci!</b></p>
+        </div>
+      </div>
+      
+      <script>
+  
+        function load_results(){
+          var search_key = document.getElementById("search").value;
+          var choosen_tag = document.getElementById("choosen_tag").value;
+      
+          var results=[];
+      
+          $.post('/search_results_loc/', {"key": search_key, "choosen_tag": choosen_tag}, function(data, textStatus) {
+            //data contains the JSON object
+            //textStatus contains the status: success, error, etc
+      
+            var searchResults = document.createElement("div");
+            searchResults.setAttribute('class', 'container');
+            var count = Object(data);
+            console.log(count);
+      
+            if (0 < Object.keys(data).length) {
+      
+              for (const [key, value] of Object.entries(data)) {
+                var newMedia = document.createElement("div")
+                newMedia.setAttribute('class', 'media  bg-light');
+      
+                var newBodyLink = document.createElement("a")
+                newBodyLink.setAttribute('class', 'btn btn-secondary align-self-center mr-3');
+                newBodyLink.setAttribute('href', key);
+               // newBodyLink.textContent = "View the content";
+      
+               var newBodyImage = document.createElement("img")
+               newBodyImage.setAttribute('src', value[2]);
+               newBodyImage.setAttribute('height', '64');
+               newBodyImage.setAttribute('width', '64');
+               newBodyLink.appendChild(newBodyImage);
+      
+                var newBody = document.createElement("div")
+                newBody.setAttribute('class', 'media-body');
+      
+                var newBodyTitle = document.createElement("h5")
+                newBodyTitle.setAttribute('class', 'mt-0');
+                newBodyTitle.textContent = value[0];
+                var newBodyText = document.createElement("p")
+                newBodyText.innerHTML = value[1];
+      
+                var line = document.createElement("hr")
+                
+                newBody.appendChild(newBodyTitle);
+                newBody.appendChild(newBodyText);
+                
+                newMedia.appendChild(newBodyLink);
+                newMedia.appendChild(newBody);
+                
+                searchResults.appendChild(newMedia);
+                searchResults.appendChild(line);
+                
+              }
+      
+            } else {
+              var noResults = document.createElement("p")
+              noResults.textContent = "Smo iskali visoko in globoko, ampak nismo nasli nicesar. Poskusi drugacne besede?";
+              searchResults.appendChild(noResults);
+            }
+      
+            $("#results").empty();
+            document.getElementById("results").appendChild(searchResults);
+          }, "json");
+      
+        };
+      
+        document.getElementById("search").onkeyup = load_results;
+        document.getElementById("choosen_languages").onchange = load_results;
+      
+      </script>
+
+    </div>
+  <div class="col-md">
+    
+      
+  </div>
+</div>
+
+</div>
+{% endblock content %}

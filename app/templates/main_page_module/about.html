@@ -1,0 +1,77 @@
+{% extends "main_page_module/base.html" %}
+
+{% block extraheader %}
+{% endblock extraheader  %}
+
+{% block nav_about %}active{% endblock nav_about %}
+
+
+{% block flashes %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div>
+        {% for category, message in messages %}
+          {% if category == "error" %}
+            <div class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
+            <br>
+          {% else %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+            <br>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+{% endblock flashes %}
+
+
+{% block content%}
+<br>
+<div class="container-fluid" style="background-color: rgb(255, 255, 255)">
+  <br>
+  <div class="row">
+      <div class="col-md-2">
+      </div>
+      <div class="col-md">
+        <h1>O nas</h1>
+      <hr>      
+      <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/default.svg') }}" class="rounded mx-auto d-block" alt="..." style="width: 100px; height: 100px;">
+      <br>
+      <br>
+      <p>Spletna stran obstaja z namenom agregiranja lokacij po Sloveniji in bližnji okolici, za hitrejše planiranje izletov, vzpodbujanje turizma in kvalitetnejšega preživljanje prostega časa.</p>
+        <p>Trenutno je spletna stran v testni fazi izboljševanja in izoblikovanja njenega delovanja in uporabniškega vmesnika.</p>
+        <p>Za morebitna vprašanja ali predloge, izboljšav ali dodatnih lokacij, nas lahko kontaktirate na naslov <a href = "mailto: svetovid@razor.si">svetovid@razor.si</a></p>  
+    </div>
+    <div class="col-md-2">
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md">
+      <h1>Assets</h1>
+      <hr>
+      <div class="container">
+        <div>Icons made by <a href="https://www.flaticon.com/authors/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
+        <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        <div>Icons made by <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat Icons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        <div>Icons made by <a href="https://www.flaticon.com/authors/nikita-golubev" title="Nikita Golubev">Nikita Golubev</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        <div>Icons made by <a href="https://www.flaticon.com/authors/skyclick" title="Skyclick">Skyclick</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        <div>Icons made by <a href="https://www.flaticon.com/authors/good-ware" title="Good Ware">Good Ware</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        <div>Icons made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        <div><a href='https://www.freepik.com/vectors/background'>Background vector created by brgfx - www.freepik.com</a></div>
+        <div><a href='https://www.freepik.com/vectors/tree'>Tree vector created by upklyak - www.freepik.com</a></div>
+      </div>
+    </div>
+    <div class="col-md-2">
+    </div>
+  </div>
+  <br>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,129 @@
+{% extends "main_page_module/base.html" %}
+
+{% block extraheader %}
+{% endblock extraheader  %}
+
+{% block nav_index %}active{% endblock nav_index %}
+
+
+{% block flashes %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div>
+        {% for category, message in messages %}
+          {% if category == "error" %}
+            <div class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
+          {% else %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <br>
+    {% endif %}
+  {% endwith %}
+{% endblock flashes %}
+
+
+{% block content%}
+<style>
+  .jumbotron {
+    color: white;
+    background: url("{{ url_for('static', filename='background2.jpg') }}") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+ }
+</style>
+
+
+<br>
+<div class="container-fluid" style="background-color: rgb(255, 255, 255)">
+  <br>  
+
+  <div class="row">
+    <div class="col-md-3 text-center">
+
+    </div>
+    <div class="col-md-6">
+
+      <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">{{ myth[1] }}</h1>
+          <hr class="my-4">
+          <p class="lead">{{ myth[2] }}</p>
+        </div>
+      </div>
+
+      <h6>Zgodba</h6>
+      <p>{{ myth[3] }}</p>
+
+      <hr>
+      <h6>Koordinate Pripovedka</h6>
+      <a href="https://www.google.com/maps/search/?api=1&query={{ myth[4] }}" target="_blank"><b>{{ myth[4] }}</b></a>
+
+      <hr>
+      <h6>Viri Pripovedke</h6>
+      <p><b>{{ myth[5] }}</b></p>
+
+      {% if session['user_id'] %}
+      <hr>
+      <a href="{{ url_for('main_page_module.edit_myth', myth_id=myth[0]) }}" class="btn btn-outline-info btn-block" role="button">Uredi</a>
+      <hr>
+      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{ 'for_modal' ~ myth[0] }}">Odstrani</button>
+      <!-- Modal -->
+      <div class="modal fade" id="{{ 'for_modal' ~ myth[0] }}" tabindex="-1" role="dialog" aria-labelledby="{{ myth[0] ~ 'for_modaltext' }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="{{ myth[0] }} ~ 'for_modaltext' }}">Izbrisi Pripovedko</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Ali hoce res izbrisati Pripovedko "{{ myth[1] }}" ?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Zapri</button>
+              
+              <form method="POST" action="{{ url_for('main_page_module.delete_myth') }}" accept-charset="UTF-8" role="form">
+                <input type="hidden" id="id" name="id" value="{{ myth[0] }}">
+                <button type="submit" class="btn btn-danger">Izbrisi Pripovedko</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    <div class="col-md text-center">
+      
+      <div class="card" >
+        <div class="card-header">
+          Oznake
+        </div>
+        <ul class="list-group list-group-flush" id="mtags">
+          {% if ( mtags|length != 0) %}
+          {% for i in mtags%}
+              <li class="list-group-item" id="{{ i[0] ~ 'loc_tag' }}">
+                <a href="{{ url_for('main_page_module.view_mtag', mtag_id=i[2]) }}"><span class="badge badge-pill badge-dark">{{ i[4] }}</span></a>
+              </li>
+          {% endfor %}
+        {% else %}
+          <h5>Nobene Oznake</h5>
+        {% endif %}
+
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  
+  </div>
+  <br>
+{% endblock content %}

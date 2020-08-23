@@ -1,0 +1,275 @@
+{% extends "main_page_module/base.html" %}
+
+
+{% block extraheader %}
+{% endblock %}
+
+{% block nav_new_entry %}active{% endblock nav_new_entry %}
+
+
+{% block flashes %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div>
+        {% for category, message in messages %}
+          {% if category == "error" %}
+            <div class="alert alert-danger" role="alert">
+              {{ message }}
+            </div>
+            <br>
+          {% else %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+            <br>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+{% endblock %}
+
+{% macro render_field(field, placeholder=None) %}
+      <div class="form-group">
+          {% set css_class = 'form-control ' + kwargs.pop('class', '') %}
+
+          {{ field.label }}
+
+          {% if field.errors %}
+              {% set css_class = css_class + ' is-invalid' %}
+
+              {% for error in field.errors %}
+                  
+                  <small id="{{ field.label.text }}" class="text-danger">
+                      {{ error }}
+                </small>
+
+              {% endfor %}
+              </ul>
+          {% endif %}
+
+          {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
+      </div>
+      {% endmacro %}
+
+
+{% block content%}
+
+<div class="container-fluid" style="background-color: rgb(255, 255, 255)">
+  <br>  
+
+  <div class="row">
+    <div class="col-md">
+      
+    </div>
+    <div class="col-md-6">
+
+      <div>
+        <div>
+          <br>
+          <form method="POST" action="{{ url_for('main_page_module.change_myth') }}" accept-charset="UTF-8" role="form">
+          {{ form.csrf_token }}
+          {{ form.id }}
+          {{ render_field(form.name, placeholder="Ime pripovedke",
+                                        autofocus="") }}
+          {{ render_field(form.desc_s, placeholder="Kratek opis pripovedke") }}
+          {{ render_field(form.desc_l, placeholder="Zgodba pripovedke", rows='3') }}
+          {{ render_field(form.coord, placeholder="Koordinate izvora pripovedke") }}
+          {{ render_field(form.info, placeholder="Viri za pripovedko") }}
+
+          <br>
+          <input type="submit" class="btn btn-primary btn-block" name="submit" value="Posodobi">
+
+          </form>
+        </div>
+      </div>
+      <br>
+
+    </div>
+    <div class="col-md">
+      <hr>
+      <h5>Oznake</h5>
+      <button class="btn btn-outline-success btn-block" title="Tag button" data-toggle="modal" data-target="#tagModal">Dodaj Oznako</button>
+      <hr>
+
+      <div class="card" >
+        <ul class="list-group list-group-flush" id="mtags">
+          {% if ( mtags|length != 0) %}
+          {% for i in mtags%}
+              <li class="list-group-item" id="{{ i[0] ~ 'loc_mtag' }}"><a href="{{ url_for('main_page_module.view_mtag', mtag_id=i[2]) }}"><span class="badge badge-pill badge-dark">{{ i[4] }}</span></a>
+                <button type="button" class="close" aria-label="Close" id="{{ i[0] ~ 'loc_mtag' }}" onclick="remove_mtag(this.id)">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </li>
+          {% endfor %}
+        {% else %}
+          <h5>Nobene Oznake</h5>
+        {% endif %}
+
+        </ul>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="tagModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalLabel">Oznake</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="myth_id" value="{{ form.id.data }}">
+              <div class="input-group">
+                <div class="input-group-append">
+                  <select class="custom-select" id="choosen_tag">
+                    {% for tag in all_mtags %}
+                      <option value="{{ tag[0] }}">{{ tag[1] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <button type="button" class="form-control btn btn-outline-info" onclick="add_tag()">Dodaj Oznako</button>
+              </div>
+              <hr>
+                <form method="POST" action="{{ url_for('main_page_module.create_mtag') }}" accept-charset="UTF-8" role="form">
+                  {{ form.id }}
+                  {{ form_mtag.csrf_token }}
+                  {{ render_field(form_mtag.name, placeholder="Ime oznake") }}
+                  <input type="submit" class="btn btn-success btn-block" name="submit" value="Ustvari Oznako">
+          
+                </form>
+
+            </div>
+        </div>
+      </div>
+    </div>
+
+  <script>
+    function add_tag(){
+
+      var myth_id = document.getElementById("myth_id");
+      myth_id = myth_id.value
+
+      var tag_selector = document.getElementById("choosen_tag");
+      var mtag_id = tag_selector.options[tag_selector.selectedIndex].value;
+
+
+      $.post('/add_mtag/', {"myth_id": myth_id, "mtag_id": mtag_id}, function(data, textStatus) {
+        //console.log(data["a"]);
+        var snackbar = document.getElementById("snackbar");
+
+        if (data["a"] == "OK"){
+          //console.log(returned_data);
+          snackbar.innerHTML = "Oznaka dodana Pripovedki";
+
+
+        } else if (data["a"] == "KO"){
+          snackbar.innerHTML = "Oznaka ze dodana Pripovedki";
+
+        } else {
+          snackbar.innerHTML = "Error while adding the Tag";
+        }
+
+        show_snackbar();
+        
+
+      }, "json");
+
+      };
+
+
+    function remove_mtag(myth_mtag_id){
+
+      myth_mtag_id = myth_mtag_id.replace('loc_mtag','');
+
+      $.post('/remove_mtag/', {"myth_mtag_id": myth_mtag_id}, function(data, textStatus) {
+        //console.log(data["a"]);
+        var snackbar = document.getElementById("snackbar");
+
+        if (data["a"] != "-1"){
+          //console.log(returned_data);
+          snackbar.innerHTML = "Oznaka odstranjena";
+
+          var tag_div = document.getElementById(myth_mtag_id + "loc_mtag");
+
+          tag_div.remove();
+
+        } else {
+          snackbar.innerHTML = "Error while removing the Tag";
+        }
+
+        show_snackbar();
+        
+
+      }, "json");
+
+    };
+
+    function show_snackbar() {
+      // Get the snackbar DIV
+      var x = document.getElementById("snackbar");
+
+      // Add the "show" class to DIV
+      x.className = "show";
+
+      // After 3 seconds, remove the show class from DIV
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+  </script>
+
+
+  <div id="snackbar">Notation added</div>
+
+  <style>
+  /* The snackbar - position it at the bottom and in the middle of the screen */
+    #snackbar {
+      visibility: hidden; /* Hidden by default. Visible on click */
+      min-width: 250px; /* Set a default minimum width */
+      margin-left: -125px; /* Divide value of min-width by 2 */
+      background-color: #333; /* Black background color */
+      color: #fff; /* White text color */
+      text-align: center; /* Centered text */
+      border-radius: 2px; /* Rounded borders */
+      padding: 16px; /* Padding */
+      position: fixed; /* Sit on top of the screen */
+      z-index: 1; /* Add a z-index if needed */
+      left: 50%; /* Center the snackbar */
+      bottom: 30px; /* 30px from the bottom */
+    }
+
+    /* Show the snackbar when clicking on a button (class added with JavaScript) */
+    #snackbar.show {
+      visibility: visible; /* Show the snackbar */
+      /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+      However, delay the fade out process for 2.5 seconds */
+      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    /* Animations to fade the snackbar in and out */
+    @-webkit-keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+    }
+
+    @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+    }
+
+    @-webkit-keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+
+    @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+  </style>
+
+{% endblock %}
