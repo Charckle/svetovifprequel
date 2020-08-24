@@ -15,7 +15,13 @@ connection = MySQLdb.connect (host = app.config['DB_HOST'],
                               user = app.config['DB_USERNAME'],
                               passwd = app.config['DB_PASSWORD'],
                               db = app.config['DB_NAME'])
-cursor = connection.cursor()
+while True:
+    try:
+        cursor = connection.cursor()
+        break
+    
+    except:
+        pass
 
 # Sample HTTP error handling
 @app.errorhandler(404)
