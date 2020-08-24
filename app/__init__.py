@@ -8,20 +8,23 @@ import MySQLdb
 app = Flask(__name__)
 
 # Configurations
-app.config.from_object("config.DevelopmentConfig")
+app.config.from_object("config.ProductionConfig")
 
 #connection = sqlite3.connect("sqlite:///razor_notes.sqlite3")
-connection = MySQLdb.connect (host = app.config['DB_HOST'],
-                              user = app.config['DB_USERNAME'],
-                              passwd = app.config['DB_PASSWORD'],
-                              db = app.config['DB_NAME'])
+
 while True:
     try:
+        connection = MySQLdb.connect (host = app.config['DB_HOST'],
+                                      user = app.config['DB_USERNAME'],
+                                      passwd = app.config['DB_PASSWORD'],
+                                      db = app.config['DB_NAME'])
+        
         cursor = connection.cursor()
         break
     
     except:
         pass
+
 
 # Sample HTTP error handling
 @app.errorhandler(404)
