@@ -36,15 +36,15 @@
 
 {% block content%}
 <br>
-<div class="container-fluid" style="background-color: rgb(255, 255, 255)">
+<div class="container-fluid" style="background-color: rgb(255, 255, 255);">
   <br>  
 
   <div class="row">
-    <div class="col-md-3" style="height: calc(100vh - 250px);">
-      <a id="link_to_loc" href="#"><img id="big_image" src="{{ url_for('static', filename='placeholder.png') }}" class="img-fluid rounded "></a>
+    <div class="col-md-3">
+      <a id="link_to_loc" href="#"><img id="big_image" src="{{ url_for('static', filename='icons/default.svg') }}" class="img-fluid rounded "></a>
       <hr>
       <div class="media">
-        <img id="loc_icon_small" src="{{ url_for('static', filename='placeholder.png') }}" class="mr-3" alt="..." width="64" height="64">
+        <img id="loc_icon_small" src="{{ url_for('static', filename='icons/search.svg') }}" class="mr-3" alt="..." width="64" height="64">
         <div class="media-body">
           <h5 id="loc_name_h5" class="mt-0">Ime lokacije</h5>
           <p id="loc_desc_p">

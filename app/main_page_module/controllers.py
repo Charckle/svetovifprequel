@@ -2,7 +2,7 @@
 from flask import Blueprint, request, render_template, \
                   flash, g, session, redirect, url_for, jsonify, send_file
 
-from app import connection, cursor
+
 # Import module forms
 from app.main_page_module.forms import LoginForm, RegisterForm, EditUserForm, LocationForm, ParkingForm, TagForm, MythForm, MTagForm
 

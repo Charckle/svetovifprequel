@@ -1,5 +1,6 @@
 # Import flask and template operators
 from flask import Flask, render_template
+import time
 
 # Import SQLite3
 import MySQLdb
@@ -8,23 +9,36 @@ import MySQLdb
 app = Flask(__name__)
 
 # Configurations
-app.config.from_object("config.ProductionConfig")
 app.config.from_object("config.DevelopmentConfig")
 
 #connection = sqlite3.connect("sqlite:///razor_notes.sqlite3")
+sql_host = app.config['DB_HOST']
+sql_user = app.config['DB_USERNAME']
+sql_passwrd = app.config['DB_PASSWORD']
+sql_db = app.config['DB_NAME']
 
-while True:
-    try:
-        connection = MySQLdb.connect (host = app.config['DB_HOST'],
-                                      user = app.config['DB_USERNAME'],
-                                      passwd = app.config['DB_PASSWORD'],
-                                      db = app.config['DB_NAME'])
-        
-        cursor = connection.cursor()
-        break
-    
-    except:
-        pass
+class DB:
+    conn = None
+  
+    def connect(self):
+        self.conn = MySQLdb.connect(host = sql_host,
+                                      user = sql_user,
+                                      passwd = sql_passwrd,
+                                      db = sql_db)
+  
+    def query(self, sql):
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(sql)
+            
+        except (AttributeError, MySQLdb.OperationalError):
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(sql)
+            
+        return cursor
+
+db = DB()
 
 
 # Sample HTTP error handling
