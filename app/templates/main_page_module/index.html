@@ -106,15 +106,14 @@
 
   {% for i in locations%}
 
-
   var iconFeature = new ol.Feature({
     loc_id: "{{ i[0] }}",
     name: "{{ i[1] }}",
     desc: "{{ i[2] }}",
     icon: "{{ i[3] }}",
-    geometry: new ol.geom.Point(ol.proj.fromLonLat([{{ i[4].split(",")[1] }}, {{ i[4].split(",")[0]  }}]))
+    geometry: new ol.geom.Point(ol.proj.fromLonLat([{{ i[4].split(",")[1] }}, {{ i[4].split(",")[0]  }}])),
+    img: "{% if i[5] != None %}{{ i[5] }}{% else %}/static/icons/{{ i[3] }}{% endif %}"
   });
-  
 
 var iconStyle = new ol.style.Style({
     image: new ol.style.Icon({
@@ -197,7 +196,7 @@ var iconStyle = new ol.style.Style({
 
   map.on('singleclick', function(evt){
     map.forEachFeatureAtPixel(evt.pixel, function(feature, layer){
-      console.log(feature);
+      //console.log(feature);
       mainLogic(feature)
     })
   })
@@ -207,8 +206,10 @@ var iconStyle = new ol.style.Style({
     let featureName = feature.get('name')
     let featureDesc = feature.get('desc')
     let featureIcon = feature.get('icon')
+    let featureImg = feature.get('img')
 
-    locationBigImage.setAttribute('src', '/static/icons/' + featureIcon);
+    //console.log(featureImg);
+    locationBigImage.setAttribute('src', featureImg);
     locationLink.setAttribute('href', '/view_location/' + featureId);
     locationIcon.setAttribute('src', '/static/icons/' + featureIcon);
     locationName.textContent = featureName;

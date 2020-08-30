@@ -345,7 +345,44 @@ def tag_change(tag_id, name):
     cursor = db.query(sql_command)
     db.conn.commit()
     
+
+def img_create(name, link, location_id):
+   
+    sql_command = f"""INSERT INTO imgs (name, link, id_location)
+                  VALUES ('{name}', '{link}', {location_id});"""
+        
+    cursor = db.query(sql_command)
+    db.conn.commit()
     
+    img_id = cursor.lastrowid
+    
+    return img_id
+    
+    
+def img_get_one(img_id):
+    sql_command = f"SELECT * FROM imgs WHERE id = {img_id};"
+    cursor = db.query(sql_command)
+    result = cursor.fetchone()
+    
+    #print(result)
+    
+    return result    
+
+def img_get_all_of_location(location_id):
+    sql_command = f"SELECT * FROM imgs WHERE id_location = {location_id};"
+    
+    cursor = db.query(sql_command)
+    result = cursor.fetchall()
+    
+    return result
+
+
+def img_remove(img_id):
+    sql_command = f"DELETE FROM imgs WHERE id = '{img_id}' ;"
+    cursor = db.query(sql_command)
+    db.conn.commit()
+
+
 def parking_create(name, cost, coord, location_id):
    
     sql_command = f"""INSERT INTO parkings (name, cost, coord, id_location)
@@ -396,10 +433,12 @@ def location_create(name, desc_s, desc_l, rating, tts, coord, mtld, contact, tim
 
 
 def location_get_all():
-    sql_command = f"SELECT locations.id, locations.name, LEFT(locations.desc_s , 20), icons.link, locations.coord FROM locations LEFT JOIN icons ON icons.id = locations.icon ;"
+    sql_command = f"SELECT locations.id, locations.name, LEFT(locations.desc_s , 20), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN icons ON icons.id = locations.icon LEFT JOIN imgs ON imgs.id_location = locations.id GROUP BY locations.id;"
     
     cursor = db.query(sql_command)
     result = cursor.fetchall()
+    
+    #print(result)
     
     
     return result
@@ -432,12 +471,10 @@ def myths_get_all_argus():
 
 def location_get_all_with_ids(ids):
     ids = ','.join([str(i) for i in ids]) 
-    sql_command = f"SELECT locations.id, locations.name, LEFT(locations.desc_s , 20), icons.link, locations.coord FROM locations LEFT JOIN icons ON icons.id = locations.icon WHERE locations.id IN ({ids});"
+    sql_command = f"SELECT locations.id, locations.name, LEFT(locations.desc_s , 20), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN icons ON icons.id = locations.icon LEFT JOIN imgs ON imgs.id_location = locations.id WHERE locations.id IN ({ids}) GROUP BY locations.id;"
     
-    print(sql_command)
     cursor = db.query(sql_command)
     result = cursor.fetchall()
-    
     
     return result
 
@@ -502,10 +539,21 @@ def location_change(location_id, name, desc_s, desc_l, rating, tts, coord, mtld,
 
 
 def location_delete_one(location_id):
-    sql_command = f"DELETE FROM locations WHERE id = {location_id};"
-    
-    cursor = db.query(sql_command)
-    db.conn.commit()
+    try:
+        sql_command = f"DELETE FROM imgs WHERE id_location = {location_id};"
+        
+        cursor = db.query(sql_command)
+        
+        
+        sql_command = f"DELETE FROM locations WHERE id = {location_id};"
+        
+        cursor = db.query(sql_command)
+        
+        
+        db.conn.commit()
+        
+    except:
+        db.conn.rollback()       
     
     
 def user_sql_create(username, email, password):

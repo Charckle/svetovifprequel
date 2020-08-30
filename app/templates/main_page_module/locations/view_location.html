@@ -61,30 +61,25 @@
     <div class="col-md-6">
 
       <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-          <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-          <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-          <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner">
-          <div class="carousel-item active ">
-            <img src="{{ url_for('static', filename='background.jpg') }}" class="d-block w-100" alt="..." style="width:640px;height:360px">
-            <div class="carousel-caption d-none d-md-block">
-              <h5>Tukaj bo ena slika lokacije</h5>
+        <div class="carousel-inner ">
+          {% if ( all_imgs|length != 0) %}
+            {% for i in all_imgs%}
+            <div class="carousel-item {% if loop.index == 1 %} active{% endif %}">
+              <img src="{{ i[2] }}" class="d-block w-100" alt="{{ i[1] }}" style="width:640px;height:480px">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>{{ i[1] }}</h5>
+              </div>
             </div>
-          </div>
-          <div class="carousel-item">
-            <img src="{{ url_for('static', filename='placeholder.png') }}" class="d-block w-100" alt="..." style="width:640px;height:360px">
-            <div class="carousel-caption d-none d-md-block">
-              <h5>Tukaj druga</h5>
+            {% endfor %}
+          {% else %}
+            <div class="carousel-item active ">
+              <img src="{{ url_for('static', filename='background.jpg') }}" class="d-block w-100" alt="..." style="width:640px;height:480px">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>Nobene slike se ni</h5>
+              </div>
             </div>
-          </div>
-          <div class="carousel-item">
-            <img src="{{ url_for('static', filename='placeholder.png') }}" class="d-block w-100" alt="..." style="width:640px;height:360px">
-            <div class="carousel-caption d-none d-md-block">
-              <h5>Tukaj pa tretja!</h5>
-            </div>
-          </div>
+          {% endif %}
+         
         </div>
         <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -194,7 +189,7 @@
       <div class="media">
           <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/season.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
         <div class="media-body">
-          <h6>Ali je Obisk Lokacije odvisen od letnega časa</h6>
+          <h6>Ali je Obisk Lokacije odvisen od letnega časa/vremenskih pogojev</h6>
           <p><b>{% if ( location[12] == 0) %}Ne{% else %}Da{% endif %}</b></p>
         </div>
       </div>
@@ -245,6 +240,7 @@
         </div>
       </div>
       {% endif %}
+      <hr>
     </div>
     <div class="col-md text-center">
       

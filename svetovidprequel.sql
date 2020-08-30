@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.0
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Gostitelj: 127.0.0.1
--- Čas nastanka: 23. avg 2020 ob 22.14
--- Različica strežnika: 10.1.31-MariaDB
--- Različica PHP: 7.2.4
+-- Host: 127.0.0.1
+-- Generation Time: Aug 28, 2020 at 11:50 AM
+-- Server version: 10.4.13-MariaDB
+-- PHP Version: 7.4.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -19,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Zbirka podatkov: `svetovidprequel`
+-- Database: `svetovidprequel`
 --
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabele `icons`
+-- Table structure for table `icons`
 --
 
 CREATE TABLE `icons` (
@@ -35,7 +34,7 @@ CREATE TABLE `icons` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Odloži podatke za tabelo `icons`
+-- Dumping data for table `icons`
 --
 
 INSERT INTO `icons` (`id`, `name`, `link`) VALUES
@@ -65,18 +64,38 @@ INSERT INTO `icons` (`id`, `name`, `link`) VALUES
 (24, 'Vojna', 'war.svg'),
 (25, 'Slap', 'waterfall.svg'),
 (26, 'Vodnjak', 'fountain.svg'),
-(27, 'Gorska Koca', 'mountain_hut.svg'),
-(28, 'Vlak', 'train.svg'),
-(29, 'Pokopalisce', 'graveyard.svg');
+(27, 'Gorska Koca', 'mountain_hut.svg');
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabele `locations`
+-- Table structure for table `imgs`
+--
+
+CREATE TABLE `imgs` (
+  `id` int(5) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `link` varchar(500) NOT NULL,
+  `id_location` int(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `imgs`
+--
+
+INSERT INTO `imgs` (`id`, `name`, `link`, `id_location`) VALUES
+(6, 'Otok s cerkvico', 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bled_island_from_above.jpg', 1),
+(7, 'neka raca', 'https://kraji.eu/PICTURES/gorenjska/bled_z_okolico/bled/blejski_otok/IMG_5766_bled_blejski_otok_racka_big.jpg', 1),
+(8, 'coln', 'https://fastly.4sqi.net/img/general/width960/LhRA1BBv3pFd7wJ6DB1Q8E-2n-6Qjf8rFp6QGoRZAqw.jpg', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `locations`
 --
 
 CREATE TABLE `locations` (
-  `id` int(3) NOT NULL,
+  `id` int(4) NOT NULL,
   `name` varchar(50) NOT NULL,
   `desc_s` varchar(50) NOT NULL,
   `desc_l` text NOT NULL,
@@ -93,30 +112,31 @@ CREATE TABLE `locations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Odloži podatke za tabelo `locations`
+-- Dumping data for table `locations`
 --
 
 INSERT INTO `locations` (`id`, `name`, `desc_s`, `desc_l`, `rating`, `tts`, `coord`, `mtld`, `contact`, `timetable`, `fee`, `child`, `season`, `icon`) VALUES
-(1, 'Koper', 'Malo mesto', 'Veliko Mesto', 0, 23, '45.9424489,14.0757889', 6, 'Andrej', 'od 12 - 13', 0, 0, 1, 29),
-(2, 'fgh', 'fgh', 'fgh', 0, 1, '46.0545416,14.4414767', 0, 'fbvg', 'fgh', 0, 0, 1, 28),
+(1, 'Koper', 'Malo mesto', 'Veliko Mesto', 0, 23, '45.9424489,14.0757889', 6, 'Andrej', 'od 12 - 13', 0, 0, 1, 26),
+(2, 'fgh', 'fgh', 'fgh', 0, 1, '46.0545416,14.4414767', 0, 'fbvg', 'fgh', 0, 0, 1, 7),
+(4, 'fgh', 'fgh', 'fgh', 2, 1, '45.6537072,13.9263309', 4, 'gjk', 'cgkj', 0, 2, 0, 21),
 (5, 'fgh', 'fgh', 'fgh', 2, 1, '45.6537072,13.9263309', 4, 'gjk', 'cgkj', 0, 2, 0, 15),
-(7, 'sdxfggsdfgc', 'dsfgsfg', 'sfgsdfg', 0, 2, '45.9421494,13.766093', 0, 'sfg', 'dscfg', 0, 0, 0, 24),
-(8, 'Bled', 'bled', 'dgfh', 0, 345, '45.521390, 13.727675', 0, 'sfg', 'vc', 0, 0, 0, 9);
+(6, 'gji', 'fghujf', 'hgj', 2, 45, '46.2101788,13.9667693', 0, 'ghj', 'ghj', 0, 0, 0, 1),
+(7, 'sdxfggsdfgc', 'dsfgsfg', 'sfgsdfg', 0, 2, '45.9421494,13.766093', 0, 'sfg', 'dscfg', 0, 0, 0, 24);
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabele `loc_tag`
+-- Table structure for table `loc_tag`
 --
 
 CREATE TABLE `loc_tag` (
   `id` int(3) NOT NULL,
-  `id_loc` int(3) NOT NULL,
+  `id_loc` int(4) NOT NULL,
   `id_tag` int(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Odloži podatke za tabelo `loc_tag`
+-- Dumping data for table `loc_tag`
 --
 
 INSERT INTO `loc_tag` (`id`, `id_loc`, `id_tag`) VALUES
@@ -127,7 +147,7 @@ INSERT INTO `loc_tag` (`id`, `id_loc`, `id_tag`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabele `mtags`
+-- Table structure for table `mtags`
 --
 
 CREATE TABLE `mtags` (
@@ -136,16 +156,18 @@ CREATE TABLE `mtags` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Odloži podatke za tabelo `mtags`
+-- Dumping data for table `mtags`
 --
 
 INSERT INTO `mtags` (`id`, `name`) VALUES
-(4, 'sfdhgdsf');
+(4, 'sfdhgdsf'),
+(5, 'dsfg'),
+(6, 'hjo');
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabele `myths`
+-- Table structure for table `myths`
 --
 
 CREATE TABLE `myths` (
@@ -158,16 +180,18 @@ CREATE TABLE `myths` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Odloži podatke za tabelo `myths`
+-- Dumping data for table `myths`
 --
 
 INSERT INTO `myths` (`id`, `name`, `desc_s`, `desc_l`, `coord`, `info`) VALUES
-(3, 'Zlatorog', 'mali zlatorog', 'veliki zlatorog', 'dsfg', 'dfg');
+(3, 'Zlatorog', 'mali zlatorog', 'veliki zlatorog', 'dsfg', 'dfg'),
+(4, 'fhj', 'fhj', 'fhj', '45.6537072,13.9263309', 'fgh'),
+(5, 'dfgd', 'dfg', 'dfg', 'dfg', 'dgf');
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabele `myth_mtag`
+-- Table structure for table `myth_mtag`
 --
 
 CREATE TABLE `myth_mtag` (
@@ -177,39 +201,41 @@ CREATE TABLE `myth_mtag` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Odloži podatke za tabelo `myth_mtag`
+-- Dumping data for table `myth_mtag`
 --
 
 INSERT INTO `myth_mtag` (`id`, `id_myth`, `id_mtag`) VALUES
-(4, 3, 4);
+(4, 3, 4),
+(5, 5, 5),
+(6, 3, 6),
+(7, 4, 4);
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabele `parkings`
+-- Table structure for table `parkings`
 --
 
 CREATE TABLE `parkings` (
-  `id` int(3) NOT NULL,
+  `id` int(4) NOT NULL,
   `name` varchar(50) NOT NULL,
   `cost` int(1) NOT NULL,
   `coord` varchar(50) NOT NULL,
-  `id_location` int(3) NOT NULL
+  `id_location` int(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Odloži podatke za tabelo `parkings`
+-- Dumping data for table `parkings`
 --
 
 INSERT INTO `parkings` (`id`, `name`, `cost`, `coord`, `id_location`) VALUES
 (14, 'sdfg', 0, '14.0757889,45.9434489', 1),
-(18, 'sdfg', 2, '45.9424489,14.0758889', 1),
-(19, 'sdfgvhbn', 0, '45.512405,13.724985', 8);
+(18, 'sdfg', 2, '45.9424489,14.0758889', 1);
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabele `tags`
+-- Table structure for table `tags`
 --
 
 CREATE TABLE `tags` (
@@ -218,7 +244,7 @@ CREATE TABLE `tags` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Odloži podatke za tabelo `tags`
+-- Dumping data for table `tags`
 --
 
 INSERT INTO `tags` (`id`, `name`) VALUES
@@ -229,7 +255,7 @@ INSERT INTO `tags` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabele `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -238,12 +264,12 @@ CREATE TABLE `users` (
   `username` varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(192) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `status` tinyint(1) NOT NULL DEFAULT 0,
+  `created_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 
 --
--- Odloži podatke za tabelo `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `username`, `email`, `password`, `status`, `created_date`) VALUES
@@ -251,23 +277,29 @@ INSERT INTO `users` (`id`, `name`, `username`, `email`, `password`, `status`, `c
 (4, 'm', 'm', 'andrej.zubin@edmail.com', 'pbkdf2:sha256:150000$wHwBTkhk$e7e8513789f29db3f7ff26cf044883492fd506c87e9711ee8f7e5d79f110be37', 1, '2020-06-21 14:23:03');
 
 --
--- Indeksi zavrženih tabel
+-- Indexes for dumped tables
 --
 
 --
--- Indeksi tabele `icons`
+-- Indexes for table `icons`
 --
 ALTER TABLE `icons`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksi tabele `locations`
+-- Indexes for table `imgs`
+--
+ALTER TABLE `imgs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `locations`
 --
 ALTER TABLE `locations`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksi tabele `loc_tag`
+-- Indexes for table `loc_tag`
 --
 ALTER TABLE `loc_tag`
   ADD PRIMARY KEY (`id`),
@@ -275,19 +307,19 @@ ALTER TABLE `loc_tag`
   ADD KEY `id_cat` (`id_tag`);
 
 --
--- Indeksi tabele `mtags`
+-- Indexes for table `mtags`
 --
 ALTER TABLE `mtags`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksi tabele `myths`
+-- Indexes for table `myths`
 --
 ALTER TABLE `myths`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksi tabele `myth_mtag`
+-- Indexes for table `myth_mtag`
 --
 ALTER TABLE `myth_mtag`
   ADD PRIMARY KEY (`id`),
@@ -295,20 +327,20 @@ ALTER TABLE `myth_mtag`
   ADD KEY `mtag_restriction` (`id_mtag`);
 
 --
--- Indeksi tabele `parkings`
+-- Indexes for table `parkings`
 --
 ALTER TABLE `parkings`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_location_restric` (`id_location`);
 
 --
--- Indeksi tabele `tags`
+-- Indexes for table `tags`
 --
 ALTER TABLE `tags`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksi tabele `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
@@ -316,82 +348,88 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- AUTO_INCREMENT zavrženih tabel
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT tabele `icons`
+-- AUTO_INCREMENT for table `icons`
 --
 ALTER TABLE `icons`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
--- AUTO_INCREMENT tabele `locations`
+-- AUTO_INCREMENT for table `imgs`
+--
+ALTER TABLE `imgs`
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `locations`
 --
 ALTER TABLE `locations`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT tabele `loc_tag`
+-- AUTO_INCREMENT for table `loc_tag`
 --
 ALTER TABLE `loc_tag`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT tabele `mtags`
+-- AUTO_INCREMENT for table `mtags`
 --
 ALTER TABLE `mtags`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT tabele `myths`
+-- AUTO_INCREMENT for table `myths`
 --
 ALTER TABLE `myths`
-  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT tabele `myth_mtag`
+-- AUTO_INCREMENT for table `myth_mtag`
 --
 ALTER TABLE `myth_mtag`
-  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT tabele `parkings`
+-- AUTO_INCREMENT for table `parkings`
 --
 ALTER TABLE `parkings`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT tabele `tags`
+-- AUTO_INCREMENT for table `tags`
 --
 ALTER TABLE `tags`
   MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT tabele `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- Omejitve tabel za povzetek stanja
+-- Constraints for dumped tables
 --
 
 --
--- Omejitve za tabelo `loc_tag`
+-- Constraints for table `loc_tag`
 --
 ALTER TABLE `loc_tag`
   ADD CONSTRAINT `id_location` FOREIGN KEY (`id_loc`) REFERENCES `locations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Omejitve za tabelo `myth_mtag`
+-- Constraints for table `myth_mtag`
 --
 ALTER TABLE `myth_mtag`
   ADD CONSTRAINT `mtag_restriction` FOREIGN KEY (`id_mtag`) REFERENCES `mtags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `myth_restriction` FOREIGN KEY (`id_myth`) REFERENCES `myths` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Omejitve za tabelo `parkings`
+-- Constraints for table `parkings`
 --
 ALTER TABLE `parkings`
   ADD CONSTRAINT `id_location_restric` FOREIGN KEY (`id_location`) REFERENCES `locations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;

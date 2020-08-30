@@ -15,6 +15,18 @@ import os.path
     
 
 # Define the login form (WTForms)
+class ImgForm(FlaskForm):
+    id = HiddenField('id', [validators.InputRequired(message='Dont fiddle around with the code!')])
+    
+    name = StringField('Ime Slike', [validators.InputRequired(message='Potrebno je vnesti ime Slike'),
+                                             validators.Length(max=50)])
+    
+    link = StringField('Povezava do slike', [validators.InputRequired(message='Potrebno je vnesti povezavo do Slike'),
+                                             validators.Length(max=500)])    
+    
+    submit = SubmitField('Dodaj sliko')
+
+    
 class MTagForm(FlaskForm):
     id = HiddenField('id', [validators.InputRequired(message='Dont fiddle around with the code!')])
     
@@ -102,7 +114,7 @@ class LocationForm(FlaskForm):
     child  = SelectField(u'Ali je Lokacija primerna za otroke', [validators.InputRequired(message=u'Izberi, ali je Lokacija primerna za otroke.')], choices=childs, coerce=int)   
     
     seasons = [(0, u'Ne'), (1, u'Da')]
-    season  = SelectField(u'Ali je Lokacija odvisna od letnega časa', [validators.InputRequired(message=u'Izberi, ali je Lokacija odvisna od letnega časa.')], choices=seasons, coerce=int)
+    season  = SelectField(u'Ali je Lokacija odvisna od letnega časa/vremenski pogojev', [validators.InputRequired(message=u'Izberi, ali je Lokacija odvisna od letnega časa/vremenskih pogojev.')], choices=seasons, coerce=int)
     
     icons = [(i[0], i[1]) for i in icon_get_all()]
     icon  = SelectField(u'Izberi ikono', [validators.InputRequired(message=u'Izberi lokacijo.')], choices=icons, coerce=int)        

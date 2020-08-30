@@ -104,6 +104,33 @@
         {% endif %}
         <ul>
       </div>
+
+      <hr>
+      <h5>Slike</h5>
+      <form method="POST" action="{{ url_for('main_page_module.add_img') }}" accept-charset="UTF-8" role="form">
+        {{ form.id }}
+        {{ form_img.csrf_token }}
+        {{ render_field(form_img.name, placeholder="Ime Slike") }}
+        {{ render_field(form_img.link, placeholder="Povezava Slike") }}
+        <input type="submit" class="btn btn-success btn-block" name="submit" value="Dodaj Sliko">
+
+      </form>
+      <hr>
+      <div class="card" >
+        <ul class="list-group list-group-flush" id="imgs">
+          {% if ( all_imgs|length != 0) %}
+            {% for i in all_imgs%}
+                <li class="list-group-item" id="{{ i[0] ~ 'img' }}">{{ i[1] }}
+                  <button type="button" class="close" aria-label="Close" id="{{ i[0] ~ 'img' }}" onclick="remove_img(this.id)">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </li>
+            {% endfor %}
+          {% else %}
+            <h5>Nobenih slik</h5>
+          {% endif %}
+        <ul>
+      </div>
       
     </div>
     <div class="col-md-6">
@@ -138,7 +165,7 @@
           {{ render_field(form.timetable, placeholder="When can we visit it?", rows='3') }}
           {{ render_field(form.fee, placeholder="Select if the location has fees.") }}
           {{ render_field(form.child, placeholder="Select if the location is suitable for children") }}
-          {{ render_field(form.season, placeholder="Select if the location is season dependant") }}
+          {{ render_field(form.season, placeholder="Select if the location is season/weather dependant") }}
 
           <br>
           <input type="submit" class="btn btn-primary btn-block" name="submit" value="Submit Edits">
@@ -290,7 +317,34 @@
           parking_div.remove();
 
         } else {
-          snackbar.innerHTML = "Error while adding the Notation";
+          snackbar.innerHTML = "Error while removing the Parking";
+        }
+
+        show_snackbar();
+        
+
+      }, "json");
+
+    };
+
+    function remove_img(img_id){
+
+      img_id = img_id.replace('img','');
+
+      $.post('/remove_img/', {"img_id": img_id}, function(data, textStatus) {
+        //console.log(data["a"]);
+        var snackbar = document.getElementById("snackbar");
+
+        if (data["a"] != "-1"){
+          //console.log(returned_data);
+          snackbar.innerHTML = "Slika odstranjena";
+
+          var img_div = document.getElementById(img_id + "img");
+
+          img_div.remove();
+
+        } else {
+          snackbar.innerHTML = "Error while removing the Image";
         }
 
         show_snackbar();

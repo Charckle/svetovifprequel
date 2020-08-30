@@ -4,7 +4,7 @@ from flask import Blueprint, request, render_template, \
 
 
 # Import module forms
-from app.main_page_module.forms import LoginForm, RegisterForm, EditUserForm, LocationForm, ParkingForm, TagForm, MythForm, MTagForm
+from app.main_page_module.forms import LoginForm, RegisterForm, EditUserForm, LocationForm, ParkingForm, TagForm, MythForm, MTagForm, ImgForm
 
 # Import module models (i.e. User)
 from app.main_page_module.models import user_sql_create, user_sql_login_check, user_sql_get_all, \
@@ -13,7 +13,8 @@ from app.main_page_module.models import user_sql_create, user_sql_login_check, u
      loc_tag_get_one_by, location_get_all, location_delete_one, location_get_all_with_tag, myth_create, myth_get_one, mtag_get_all_of_myth, mtag_get_all, myth_change, \
      myth_mtag_remove, myth_get_all_with_mtag, mtag_get_one, myth_mtag_get_one, myth_mtag_get_one_by, myth_get_all, mtag_create, mtag_add, myth_delete_one, location_get_all_argus, \
      myths_get_all_argus, location_get_numbers, tag_get_numbers, location_get_all_with_tag_for_argus, myth_get_numbers, mtag_get_numbers, myth_get_all_with_mtag_for_argus, \
-     icon_get_one, location_get_icon_link, location_get_all_where_rating, location_get_all_with_ids, location_get_all_id_with_tag
+     icon_get_one, location_get_icon_link, location_get_all_where_rating, location_get_all_with_ids, location_get_all_id_with_tag, img_create, img_get_one, img_remove, \
+     img_get_all_of_location
      
 
 #import os
@@ -584,6 +585,52 @@ def create_tag():
     return redirect(url_for("main_page_module.index"))
 
 
+@main_page_module.route('/add_img/', methods=['POST'])
+@login_required
+def add_img():
+    form = ImgForm(request.form)
+    
+    location = location_get_one(form.id.data)
+        
+    # Verify the sign in form
+    if (form.validate_on_submit()) and (location is not None):
+        img_create(form.name.data, form.link.data, form.id.data)
+        
+        flash('Location successfully Eddited!', 'success')
+        
+        return redirect(url_for("main_page_module.edit_location", location_id=form.id.data))
+    
+    
+    for error in form.errors:
+        print(error)
+    
+    
+    flash('No access or the location does not exist!', 'error')
+
+    return redirect(url_for("main_page_module.index"))
+
+
+@main_page_module.route('/remove_img/', methods=['POST'])
+@login_required
+def remove_img():
+
+    img_id = request.form["img_id"]
+
+    img = img_get_one(img_id)
+    
+    json_response = {"a": "OK"}
+    
+    if img is not None:
+        img_remove(img_id)
+                
+        return jsonify(json_response)
+    
+    else:
+        json_response = {"a": "-1"}
+        
+        return jsonify(json_response)
+
+
 @main_page_module.route('/add_parking/', methods=['POST'])
 @login_required
 def add_parking():
@@ -666,6 +713,7 @@ def new_location():
 def edit_location(location_id):
     location = location_get_one(location_id)
     form_parking = ParkingForm()
+    form_img = ImgForm()
     form_tag = TagForm()
     
     if location is None:
@@ -692,22 +740,24 @@ def edit_location(location_id):
     parkings = parking_get_all_of_location(location_id)
     tags = tag_get_all_of_location(location_id)
     all_tags = tag_get_all()
+    all_imgs = img_get_all_of_location(location_id)
     
-    return render_template("main_page_module/locations/edit_location.html", form=form, form_parking=form_parking, form_tag=form_tag, parkings=parkings, tags=tags, all_tags=all_tags, icon_get_one=icon_get_one)
+    return render_template("main_page_module/locations/edit_location.html", form=form, form_parking=form_parking, form_tag=form_tag, form_img=form_img, parkings=parkings, tags=tags, all_tags=all_tags, icon_get_one=icon_get_one, all_imgs=all_imgs)
 
 
 @main_page_module.route('/view_location/<location_id>', methods=['GET', 'POST'])
 def view_location(location_id):
     location = location_get_one(location_id)
     parkings = parking_get_all_of_location(location_id)
-    tags = tag_get_all_of_location(location_id)    
+    tags = tag_get_all_of_location(location_id)
+    all_imgs = img_get_all_of_location(location_id)
     
     if location is None:
         flash('No Location found', 'error')
         
         return redirect(url_for("main_page_module.index"))
 
-    return render_template("main_page_module/locations/view_location.html", location=location, parkings=parkings, tags=tags, icon_get_one=icon_get_one)
+    return render_template("main_page_module/locations/view_location.html", location=location, parkings=parkings, tags=tags, icon_get_one=icon_get_one, all_imgs=all_imgs)
 
 
 @main_page_module.route('/change_location/', methods=['POST'])
