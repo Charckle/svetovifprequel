@@ -430,6 +430,10 @@ def location_create(name, desc_s, desc_l, rating, tts, coord, mtld, contact, tim
     
     cursor = db.query(sql_command)
     db.conn.commit()
+    
+    location_id = cursor.lastrowid
+    
+    return location_id
 
 
 def location_get_all():

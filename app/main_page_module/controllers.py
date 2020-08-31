@@ -685,11 +685,12 @@ def new_location():
     
     # Verify the sign in form
     if form.validate_on_submit():
+        coordinates = form.coord.data
 
-        location_create(form.name.data, form.desc_s.data, form.desc_l.data, form.rating.data, form.tts.data, form.coord.replace(" ", ""), form.mtld.data, form.contact.data,
+        location_id = location_create(form.name.data, form.desc_s.data, form.desc_l.data, form.rating.data, form.tts.data, coordinates.replace(" ", ""), form.mtld.data, form.contact.data,
                         form.timetable.data, form.fee.data, form.child.data, form.season.data, form.icon.data)
         
-        location_id = cursor.lastrowid
+        
         
         #create argus index
         locations = location_get_all_argus()
