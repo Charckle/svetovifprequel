@@ -9,6 +9,7 @@ import MySQLdb
 app = Flask(__name__)
 
 # Configurations
+#app.config.from_object("config.ProductionConfig")
 app.config.from_object("config.DevelopmentConfig")
 
 #connection = sqlite3.connect("sqlite:///razor_notes.sqlite3")
