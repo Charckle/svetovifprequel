@@ -447,6 +447,17 @@ def location_get_all():
     
     return result
 
+
+def location_get_all_where(command):
+    sql_command = f"""SELECT locations.id, locations.name, LEFT(locations.desc_s , 20), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN loc_tag ON loc_tag.id_loc = locations.id
+    LEFT JOIN icons ON icons.id = locations.icon LEFT JOIN imgs ON imgs.id_location = locations.id WHERE locations.id > 0 {command} GROUP BY locations.id ;"""
+    
+    cursor = db.query(sql_command)
+    result = cursor.fetchall()       
+    
+    return result
+
+
 def location_get_all_where_rating(rating):
     sql_command = f"SELECT id FROM locations WHERE rating = {rating};"
     

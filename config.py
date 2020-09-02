@@ -2,6 +2,12 @@ import sys
 from os import environ 
 
 
+DB_HOST = environ.get('DB_HOST', "127.0.0.1")
+DB_NAME = environ.get('DB_NAME', "svetovidprequel")
+DB_USERNAME = environ.get('DB_USERNAME', "root")
+DB_PASSWORD = environ.get('DB_PASSWORD', "")
+
+
 class Config(object):
     DEBUG = False
     TESTING = False
@@ -21,32 +27,27 @@ class Config(object):
     CSRF_ENABLED     = True
     
 class ProductionConfig(Config):
-    try:  
-        DB_HOST = environ['DB_HOST']
-        DB_NAME = environ['DB_NAME']
-        DB_USERNAME = environ['DB_USERNAME']
-        DB_PASSWORD = environ['DB_PASSWORD']
-        
-    except KeyError: 
-        print("Please set the environment variables")
-        #sys.exit(1)    
+    DB_HOST = DB_HOST
+    DB_NAME = DB_NAME
+    DB_USERNAME = DB_USERNAME
+    DB_PASSWORD = DB_PASSWORD 
 
 class DevelopmentConfig(Config):
     DEBUG = True
 
-    DB_HOST = "127.0.0.1"
-    DB_NAME = "svetovidprequel"
-    DB_USERNAME = "root"
-    DB_PASSWORD = ""
+    DB_HOST = DB_HOST
+    DB_NAME = DB_NAME
+    DB_USERNAME = DB_USERNAME
+    DB_PASSWORD = DB_PASSWORD
 
     SESSION_COOKIE_SECURE = False
 
 class TestingConfig(Config):
     TESTING = True
 
-    DB_HOST = "127.0.0.1"
-    DB_NAME = "svetovidprequel"
-    DB_USERNAME = "root"
-    DB_PASSWORD = ""
+    DB_HOST = DB_HOST
+    DB_NAME = DB_NAME
+    DB_USERNAME = DB_USERNAME
+    DB_PASSWORD = DB_PASSWORD
 
     SESSION_COOKIE_SECURE = False

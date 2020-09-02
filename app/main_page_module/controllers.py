@@ -14,7 +14,7 @@ from app.main_page_module.models import user_sql_create, user_sql_login_check, u
      myth_mtag_remove, myth_get_all_with_mtag, mtag_get_one, myth_mtag_get_one, myth_mtag_get_one_by, myth_get_all, mtag_create, mtag_add, myth_delete_one, location_get_all_argus, \
      myths_get_all_argus, location_get_numbers, tag_get_numbers, location_get_all_with_tag_for_argus, myth_get_numbers, mtag_get_numbers, myth_get_all_with_mtag_for_argus, \
      icon_get_one, location_get_icon_link, location_get_all_where_rating, location_get_all_with_ids, location_get_all_id_with_tag, img_create, img_get_one, img_remove, \
-     img_get_all_of_location
+     img_get_all_of_location, location_get_all_where
      
 
 #import os
@@ -63,49 +63,21 @@ def index():
             rating = int(request.form["rating"].strip())
             tag = int(request.form["tag"].strip())
             
-            print(f"rating: {rating}" )
-            print(f"tag: {tag}")
+            #print(f"rating: {rating}" )
+            #print(f"tag: {tag}")
             
         except:
             return render_template("main_page_module/index.html", locations=locations, tags=tags)
+                
+        command = ""
         
-        locations = location_get_all()
-                
-        loc_with_rat = []
-        loc_with_tag = []        
-         
-        if rating not in [0,1,2,3,4] and tag == 999999:
-            pass
+        if rating in [0,1,2,3,4]:
+            command += f" AND locations.rating = {rating} "
             
-        else:
-            if rating in [0,1,2,3,4]:
-                loc_with_rat = [i[0] for i in location_get_all_where_rating(rating)]
-            
-            else:
-                loc_with_rat = False
-                
-            if tag != 999999:
-                loc_with_tag = [i[0] for i in location_get_all_id_with_tag(tag)]
-                
-            else:
-                loc_with_tag = False
-                
-            #get only the parameter the user selected and ignore the other    
-            if loc_with_rat == False:
-                mylist = loc_with_tag
-            
-            elif loc_with_tag == False:
-                mylist = loc_with_rat
-            
-            else:
-                myset = list(set(loc_with_tag) & set(loc_with_rat))
-                mylist = list(myset)
-                        
-            if len(mylist) != 0:
-                locations = location_get_all_with_ids(mylist)
-                
-            else:
-                locations = []
+        if tag != 999999:
+            command += f" AND loc_tag.id_tag = {tag} "
+        
+        locations = location_get_all_where(command)
                         
                
     return render_template("main_page_module/index.html", locations=locations, tags=tags)
