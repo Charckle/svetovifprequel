@@ -22,12 +22,16 @@ class DB:
     conn = None
   
     def connect(self):
-        self.conn = MySQLdb.connect(host = sql_host,
+        self.conn = MySQLdb.connect(use_unicode = True,
+                                    charset = "utf8",
+                                    host = sql_host,
                                       user = sql_user,
                                       passwd = sql_passwrd,
                                       db = sql_db)
   
     def query(self, sql):
+
+        
         try:
             cursor = self.conn.cursor()
             cursor.execute(sql)

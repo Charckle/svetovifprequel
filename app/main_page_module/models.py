@@ -427,7 +427,7 @@ def location_create(name, desc_s, desc_l, rating, tts, coord, mtld, contact, tim
    
     sql_command = f"""INSERT INTO locations (name, desc_s, desc_l, rating, tts, coord, mtld, contact, timetable, fee, child, season, icon)
                   VALUES ('{name}', '{desc_s}', '{desc_l}', '{rating}', '{tts}', '{coord}', '{mtld}', '{contact}', '{timetable}', '{fee}', '{child}', '{season}', '{icon}');"""
-    
+       
     cursor = db.query(sql_command)
     db.conn.commit()
     

@@ -83,9 +83,9 @@ class LocationForm(FlaskForm):
     name = StringField(u'Ime lokacije', [validators.InputRequired(message=u'Vnesi ime Lokacije.'),
                                                validators.Length(max=50)])
     desc_s = StringField(u'Kratek opis', [validators.InputRequired(message=u'Vnesi kratek opis Lokacije.'),
-                                               validators.Length(max=50)])
+                                               validators.Length(max=100)])
     desc_l = TextAreaField(u'Dolg opis', [validators.InputRequired(message=u'Vnesi dolg opis Lokacije.'),
-                                               validators.Length(max=1300)])    
+                                               validators.Length(max=2000)])    
     
     #ratings  = [(0, 'If you have time, go see it once'), (1, 'Nothing special, but nice to see'), (2, 'Worth seeing if you can spare the time'), (3, 'Check it out, you wont regret it'), (4, 'Really good, top and see it'), (5, 'A must every time!')]
     ratings  = [(0, u'Če imaš čas, obišči enkrat'), (1, u'Nič posebnega, vendar lepo za videt'), (2, u'Vredno ogleda, če imaš ćas'), (3, u'Obišči, ne bo ti žal'), (4, u'Zelo vredno! Ustavi se in obišči!')]
@@ -98,7 +98,7 @@ class LocationForm(FlaskForm):
                                                validators.Length(max=50)])
     
     #mtlds = [(0, 'PP0 - Easy, do not bother to mention'), (1, 'PP1 - Peacefull walk'), (2, 'PP2 - Can have some climbing protections'), (3, 'PP3 - Climbing protections, but not exposed, phisical strenght needed'), (4, 'PP4 - Vertical, exposed route'), (5, 'PP5 - Basicaly rock climbing with steel cables'), (6, 'PP6 - Like 5 but harder and more vertical')]
-    mtlds = [(0, u'PP0 - Lahko, ni vredno omembe'), (1, u'PP1 - Miren sprehod{'), (2, u'PP2 - Pot, na določenih mestih zavarovana'), (3, u'PP3 - Zavarovana plezalna pot, vendar ne izpostavljena. Potrebna je fizična moč'), (4, u'PP4 - Navpična, zavarovana in izpostavljena plezalna pot'), (5, u'PP5 - V praksi navadno plezanje, s feratami'), (6, u'PP6 - Kot 5, le da težje in bolj navpično')]    
+    mtlds = [(0, u'PP0 - Lahko, ni vredno omembe'), (1, u'PP1 - Miren sprehod'), (2, u'PP2 - Pot, na določenih mestih zavarovana'), (3, u'PP3 - Zavarovana plezalna pot, vendar ne izpostavljena. Potrebna je fizična moč'), (4, u'PP4 - Navpična, zavarovana in izpostavljena plezalna pot'), (5, u'PP5 - V praksi navadno plezanje, s feratami'), (6, u'PP6 - Kot 5, le da težje in bolj navpično')]    
     #Max To Location Difficulty
     mtld     = SelectField(u'Maksimalna težavnost do Lokacije', [validators.InputRequired(message=u'Izberi Težavnost.')], choices=mtlds, coerce=int)
     
