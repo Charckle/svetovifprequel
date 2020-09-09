@@ -4,7 +4,7 @@ from flask import Blueprint, request, render_template, \
 
 
 # Import module forms
-from app.main_page_module.forms import LoginForm, RegisterForm, EditUserForm, LocationForm, ParkingForm, TagForm, MythForm, MTagForm, ImgForm
+from app.main_page_module.forms import LoginForm, RegisterForm, EditUserForm, LocationForm, ParkingForm, TagForm, MythForm, MTagForm, ImgForm, IconForm
 
 # Import module models (i.e. User)
 from app.main_page_module.models import user_sql_create, user_sql_login_check, user_sql_get_all, \
@@ -14,7 +14,7 @@ from app.main_page_module.models import user_sql_create, user_sql_login_check, u
      myth_mtag_remove, myth_get_all_with_mtag, mtag_get_one, myth_mtag_get_one, myth_mtag_get_one_by, myth_get_all, mtag_create, mtag_add, myth_delete_one, location_get_all_argus, \
      myths_get_all_argus, location_get_numbers, tag_get_numbers, location_get_all_with_tag_for_argus, myth_get_numbers, mtag_get_numbers, myth_get_all_with_mtag_for_argus, \
      icon_get_one, location_get_icon_link, location_get_all_where_rating, location_get_all_with_ids, location_get_all_id_with_tag, img_create, img_get_one, img_remove, \
-     img_get_all_of_location, location_get_all_where
+     img_get_all_of_location, location_get_all_where, icon_create
      
 
 #import os
@@ -647,6 +647,28 @@ def remove_parking():
         
         return jsonify(json_response)
 
+
+@main_page_module.route('/new_icon', methods=['GET', 'POST'])
+@login_required
+def new_icon():
+    # If sign in form is submitted
+    form = IconForm(request.form)
+    
+    # Verify the sign in form
+    if form.validate_on_submit():
+
+        icon_id = icon_create(form.name.data, form.link.data)
+       
+        
+        flash('Ikona ustvarjena!', 'success')
+        
+        return redirect(url_for("main_page_module.index"))
+    
+    for error in form.errors:
+        print(error)
+
+
+    return render_template("main_page_module/locations/new_icon.html", form=form)
 
 @main_page_module.route('/new_location', methods=['GET', 'POST'])
 @login_required

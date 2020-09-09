@@ -421,8 +421,21 @@ def parking_remove(parking_id):
     sql_command = f"DELETE FROM parkings WHERE id = '{parking_id}' ;"
     cursor = db.query(sql_command)
     db.conn.commit()
+ 
     
+def icon_create(name, link):
+   
+    sql_command = f"""INSERT INTO icons (name, link)
+                  VALUES ('{name}', '{link}');"""
+       
+    cursor = db.query(sql_command)
+    db.conn.commit()
     
+    icon_id = cursor.lastrowid
+    
+    return icon_id
+
+
 def location_create(name, desc_s, desc_l, rating, tts, coord, mtld, contact, timetable, fee, child, season, icon):
    
     sql_command = f"""INSERT INTO locations (name, desc_s, desc_l, rating, tts, coord, mtld, contact, timetable, fee, child, season, icon)

@@ -15,6 +15,19 @@ import os.path
     
 
 # Define the login form (WTForms)
+class IconForm(FlaskForm):
+    id = HiddenField('id', [validators.InputRequired(message='Dont fiddle around with the code!')])
+    
+    name = StringField('Ime Ikone', [validators.InputRequired(message='Potrebno je vnesti ime Ikone'),
+                                             validators.Length(max=50)])
+    
+    link = StringField('Ime datoteke', [validators.InputRequired(message='Potrebno je vnesti ime datoteke ikone'),
+                                             validators.Length(max=100)])    
+    
+    submit = SubmitField('Dodaj Ikono')
+    
+    
+# Define the login form (WTForms)
 class ImgForm(FlaskForm):
     id = HiddenField('id', [validators.InputRequired(message='Dont fiddle around with the code!')])
     

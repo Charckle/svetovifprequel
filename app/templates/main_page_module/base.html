@@ -49,6 +49,8 @@
                             {% if session['user_id'] %}
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ url_for('main_page_module.new_location') }}">Nova Lokacija </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url_for('main_page_module.new_icon') }}">Nova ikona </a>
                             {% endif %}
                         </div>
                     </li>
