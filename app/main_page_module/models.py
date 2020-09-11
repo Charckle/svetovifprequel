@@ -178,7 +178,7 @@ def myth_get_one(myth_id):
 
 
 def myth_get_all():
-    sql_command = f"SELECT id, name, LEFT(desc_s , 20) FROM myths ;"
+    sql_command = f"SELECT id, name, LEFT(desc_s , 100) FROM myths ;"
     
     cursor = db.query(sql_command)
     result = cursor.fetchall()
@@ -450,7 +450,7 @@ def location_create(name, desc_s, desc_l, rating, tts, coord, mtld, contact, tim
 
 
 def location_get_all():
-    sql_command = f"SELECT locations.id, locations.name, LEFT(locations.desc_s , 20), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN icons ON icons.id = locations.icon LEFT JOIN imgs ON imgs.id_location = locations.id GROUP BY locations.id;"
+    sql_command = f"SELECT locations.id, locations.name, LEFT(locations.desc_s , 100), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN icons ON icons.id = locations.icon LEFT JOIN imgs ON imgs.id_location = locations.id GROUP BY locations.id;"
     
     cursor = db.query(sql_command)
     result = cursor.fetchall()
@@ -462,7 +462,7 @@ def location_get_all():
 
 
 def location_get_all_where(command):
-    sql_command = f"""SELECT locations.id, locations.name, LEFT(locations.desc_s , 20), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN loc_tag ON loc_tag.id_loc = locations.id
+    sql_command = f"""SELECT locations.id, locations.name, LEFT(locations.desc_s , 100), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN loc_tag ON loc_tag.id_loc = locations.id
     LEFT JOIN icons ON icons.id = locations.icon LEFT JOIN imgs ON imgs.id_location = locations.id WHERE locations.id > 0 {command} GROUP BY locations.id ;"""
     
     cursor = db.query(sql_command)
@@ -499,7 +499,7 @@ def myths_get_all_argus():
 
 def location_get_all_with_ids(ids):
     ids = ','.join([str(i) for i in ids]) 
-    sql_command = f"SELECT locations.id, locations.name, LEFT(locations.desc_s , 20), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN icons ON icons.id = locations.icon LEFT JOIN imgs ON imgs.id_location = locations.id WHERE locations.id IN ({ids}) GROUP BY locations.id;"
+    sql_command = f"SELECT locations.id, locations.name, LEFT(locations.desc_s , 100), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN icons ON icons.id = locations.icon LEFT JOIN imgs ON imgs.id_location = locations.id WHERE locations.id IN ({ids}) GROUP BY locations.id;"
     
     cursor = db.query(sql_command)
     result = cursor.fetchall()
