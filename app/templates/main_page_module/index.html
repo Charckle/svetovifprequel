@@ -46,7 +46,7 @@
       <div class="media">
         <img id="loc_icon_small" src="{{ url_for('static', filename='icons/search.svg') }}" class="mr-3" alt="..." width="64" height="64">
         <div class="media-body">
-          <h5 id="loc_name_h5" class="mt-0">Ime lokacije</h5>
+          <a id="link_to_loc_name" href="#"><h5 id="loc_name_h5" class="mt-0">Ime lokacije</h5></a>
           <p id="loc_desc_p">
             Opis lokacije
           </p>
@@ -189,6 +189,7 @@ var iconStyle = new ol.style.Style({
   //map click logic
   const locationBigImage = document.getElementById('big_image');
   const locationLink = document.getElementById('link_to_loc');
+  const locationNameLink = document.getElementById('link_to_loc_name');
   const locationIcon = document.getElementById('loc_icon_small');
   const locationName = document.getElementById('loc_name_h5');
   const locationDesc = document.getElementById('loc_desc_p');
@@ -211,6 +212,7 @@ var iconStyle = new ol.style.Style({
     //console.log(featureImg);
     locationBigImage.setAttribute('src', featureImg);
     locationLink.setAttribute('href', '/view_location/' + featureId);
+    locationNameLink.setAttribute('href', '/view_location/' + featureId);
     locationIcon.setAttribute('src', '/static/icons/' + featureIcon);
     locationName.textContent = featureName;
     locationDesc.textContent = featureDesc;
