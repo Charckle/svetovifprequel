@@ -9,8 +9,10 @@ import MySQLdb
 app = Flask(__name__)
 
 # Configurations
-#app.config.from_object("config.ProductionConfig")
-app.config.from_object("config.DevelopmentConfig")
+if environ.get('ENVCONFIG', "DEV") != 'PROD':
+    app.config.from_object("config.DevelopmentConfig")
+else:
+    app.config.from_object("config.ProductionConfig")
 
 #connection = sqlite3.connect("sqlite:///razor_notes.sqlite3")
 sql_host = app.config['DB_HOST']
