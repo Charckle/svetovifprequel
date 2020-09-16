@@ -1,6 +1,7 @@
 # Import flask and template operators
 from flask import Flask, render_template
 import time
+from os import environ 
 
 # Import SQLite3
 import MySQLdb
