@@ -60,6 +60,34 @@
 
   <div class="row">
     <div class="col-md">
+        <hr>
+
+      <h5>Slike</h5>
+      <form method="POST" action="{{ url_for('main_page_module.add_img') }}" accept-charset="UTF-8" role="form">
+        {{ form.id }}
+        {{ form_img.csrf_token }}
+        {{ render_field(form_img.name, placeholder="Ime Slike") }}
+        {{ render_field(form_img.link, placeholder="Povezava Slike") }}
+        <input type="submit" class="btn btn-success btn-block" name="submit" value="Dodaj Sliko">
+
+      </form>
+      <hr>
+      <div class="card" >
+        <ul class="list-group list-group-flush" id="imgs">
+          {% if ( all_imgs|length != 0) %}
+            {% for i in all_imgs%}
+                <li class="list-group-item" id="{{ i[0] ~ 'img' }}">{{ i[1] }}
+                  <button type="button" class="close" aria-label="Close" id="{{ i[0] ~ 'img' }}" onclick="remove_img(this.id)">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </li>
+            {% endfor %}
+          {% else %}
+            <h5>Nobenih slik</h5>
+          {% endif %}
+        <ul>
+      </div>
+      
       <hr>
       <h5>Parking</h5>
       <button class="btn btn-outline-warning btn-block" onclick="getLocation()">Pridobi koordinate </button>
@@ -93,7 +121,7 @@
         <ul class="list-group list-group-flush" id="parkings">
           {% if ( parkings|length != 0) %}
           {% for i in parkings%}
-              <li class="list-group-item" id="{{ i[0] ~ 'park' }}"><a href="https://www.google.com/maps/search/?api=1&query={{ i[3] }}" target="_blank">{{ i[1] }} - {% if ( i[2] == 0) %}Free{% elif ( i[2] == 0) %}Cheap{% else %}Expensive{% endif %}</a>
+              <li class="list-group-item" id="{{ i[0] ~ 'park' }}"><a href="https://www.google.com/maps/search/?api=1&query={{ i[3] }}" target="_blank">{{ i[1] }} - {% if ( i[2] == 0) %}Free{% elif ( i[2] == 1) %}Cheap{% else %}Expensive{% endif %}</a>
                 <button type="button" class="close" aria-label="Close" id="{{ i[0] ~ 'park' }}" onclick="remove_parking(this.id)">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -105,32 +133,8 @@
         <ul>
       </div>
 
-      <hr>
-      <h5>Slike</h5>
-      <form method="POST" action="{{ url_for('main_page_module.add_img') }}" accept-charset="UTF-8" role="form">
-        {{ form.id }}
-        {{ form_img.csrf_token }}
-        {{ render_field(form_img.name, placeholder="Ime Slike") }}
-        {{ render_field(form_img.link, placeholder="Povezava Slike") }}
-        <input type="submit" class="btn btn-success btn-block" name="submit" value="Dodaj Sliko">
-
-      </form>
-      <hr>
-      <div class="card" >
-        <ul class="list-group list-group-flush" id="imgs">
-          {% if ( all_imgs|length != 0) %}
-            {% for i in all_imgs%}
-                <li class="list-group-item" id="{{ i[0] ~ 'img' }}">{{ i[1] }}
-                  <button type="button" class="close" aria-label="Close" id="{{ i[0] ~ 'img' }}" onclick="remove_img(this.id)">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </li>
-            {% endfor %}
-          {% else %}
-            <h5>Nobenih slik</h5>
-          {% endif %}
-        <ul>
-      </div>
+      
+      
       
     </div>
     <div class="col-md-6">

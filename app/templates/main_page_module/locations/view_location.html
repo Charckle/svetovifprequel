@@ -47,7 +47,7 @@
         <ul class="list-group list-group-flush">
           {% if ( parkings|length != 0) %}
             {% for i in parkings%}
-                <li class="list-group-item" id="{{ i[0] ~ 'park' }}"><a href="#koordinateDiv" >{{ i[1] }} - {% if ( i[2] == 0) %}Zastonj{% elif ( i[2] == 0) %}Poceni{% else %}Drago{% endif %}</a>
+                <li class="list-group-item" id="{{ i[0] ~ 'park' }}"><a href="#koordinateDiv" >{{ i[1] }} - {% if ( i[2] == 0) %}Zastonj{% elif ( i[2] == 1) %}Poceni{% else %}Drago{% endif %}</a>
                 </li>
             {% endfor %}
           {% else %}
