@@ -32,17 +32,15 @@ class DB:
                                       passwd = sql_passwrd,
                                       db = sql_db)
   
-    def query(self, sql):
-
-        
+    def query(self, sql, variables):
         try:
             cursor = self.conn.cursor()
-            cursor.execute(sql)
+            cursor.execute(sql, variables)
             
         except (AttributeError, MySQLdb.OperationalError):
             self.connect()
             cursor = self.conn.cursor()
-            cursor.execute(sql)
+            cursor.execute(sql, variables)
             
         return cursor
 
