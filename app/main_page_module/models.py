@@ -314,7 +314,7 @@ def tag_get_one(tag_id):
 
 
 def tag_get_all():
-    sql_command = f"SELECT * FROM tags;"
+    sql_command = f"SELECT * FROM tags ORDER BY name;"
     
     cursor = db.query(sql_command, ())
     result = cursor.fetchall()

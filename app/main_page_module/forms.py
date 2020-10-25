@@ -129,10 +129,14 @@ class LocationForm(FlaskForm):
     seasons = [(0, u'Ne'), (1, u'Da')]
     season  = SelectField(u'Ali je Lokacija odvisna od letnega časa/vremenski pogojev', [validators.InputRequired(message=u'Izberi, ali je Lokacija odvisna od letnega časa/vremenskih pogojev.')], choices=seasons, coerce=int)
     
-    icons = [(i[0], i[1]) for i in icon_get_all()]
+    icons = []
     icon  = SelectField(u'Izberi ikono', [validators.InputRequired(message=u'Izberi lokacijo.')], choices=icons, coerce=int)        
     
     submit = SubmitField(u'Oddaj')
+    
+    def __init__(self, *args, **kwargs):
+        super(LocationForm, self).__init__(*args, **kwargs)
+        self.icon.choices = [(i[0], i[1]) for i in icon_get_all()]
     
          
 

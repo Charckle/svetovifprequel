@@ -257,6 +257,7 @@ var iconStyle = new ol.style.Style({
     var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
 
     content.innerHTML = '<h5>' + featureName + '</h5>';
+    image_pop.setAttribute('src', featureIcon);
     image_pop.setAttribute('src', featureImg);
     link_pop.setAttribute('href', '/view_location/' + featureId);
     overlayz.setPosition(coordinate);
