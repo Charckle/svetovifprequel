@@ -2,7 +2,7 @@
 from flask_wtf import FlaskForm # , RecaptchaField
 
 # Import Form elements such as TextField and BooleanField (optional)
-from wtforms import BooleanField, IntegerField, StringField, TextAreaField, PasswordField, HiddenField, SubmitField, SelectField, validators # BooleanField
+from wtforms import BooleanField, IntegerField, StringField, TextAreaField, PasswordField, HiddenField, SubmitField, SelectField, DecimalField, validators # BooleanField
 
 # Import Form validators
 from wtforms.validators import Email, EqualTo, ValidationError
@@ -115,13 +115,16 @@ class LocationForm(FlaskForm):
     #Max To Location Difficulty
     mtld     = SelectField(u'Maksimalna težavnost do Lokacije', [validators.InputRequired(message=u'Izberi Težavnost.')], choices=mtlds, coerce=int)
     
-    contact = StringField(u'Kontakt', [validators.InputRequired(message=u'Vnesi kontakt za Lokacijo.'),
-                                               validators.Length(max=100)])
+    webpage = StringField(u'Spletna stran', [validators.Length(max=100)])    
     
-    timetable  = TextAreaField(u'Urnik', [validators.InputRequired(message=u'Vnesi urnik Lokacije.')])
+    contact = StringField(u'Kontakt', [validators.Length(max=100)])
+    
+    timetable  = TextAreaField(u'Urnik')
     
     fees = [(0, u'Ne'), (1, u'Odvisno'), (2, 'Da')]
-    fee  = SelectField('Vstopnina', [validators.InputRequired(message=u'Izberi, ali ima Lokacija vstopnino')], choices=fees, coerce=int)   
+    fee  = SelectField('Vstopnina', [validators.InputRequired(message=u'Izberi, ali ima Lokacija vstopnino')], choices=fees, coerce=int)
+    
+    fee_price = DecimalField('Cena vstopnine v € (odrasli)', [validators.InputRequired(message='Vnesi višino vstopnine v €')], places=2)
     
     childs = [(0, u'Ne'), (1, 'Odvisno'), (2, u'Da')]
     child  = SelectField(u'Ali je Lokacija primerna za otroke', [validators.InputRequired(message=u'Izberi, ali je Lokacija primerna za otroke.')], choices=childs, coerce=int)   

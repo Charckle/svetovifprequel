@@ -146,6 +146,16 @@
       <hr>
 
       <div class="media">
+          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/webpage.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+        <div class="media-body">
+          <h6>Spletna stran</h6>
+          <p><b><a href="http://{{ location[14] }}">Pojdi na spletno stran</a></b></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="media">
           <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/card.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
         <div class="media-body">
           <h6>Kontakt za Lokacijo</h6>
@@ -166,11 +176,25 @@
 
       <hr>
 
-      <div class="media">
-          <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/ticket.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
-        <div class="media-body">
-          <h6>Vstopnina Lokacije</h6>
-          <p><b>{% if ( location[10] == 0) %}Ne{% elif (location[10] == 1) %}Odvisno{% else %}Da{% endif %}</b></p>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="media">
+              <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/ticket.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+            <div class="media-body">
+              <h6>Vstopnina Lokacije</h6>
+              <p><b>{% if ( location[10] == 0) %}Ne{% elif (location[10] == 1) %}Odvisno{% else %}Da{% endif %}</b></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="media">
+              <img class="mr-3" id="icon_image" src="{{ url_for('static', filename='icons/dollar.svg') }}" class="rounded float-left" alt="..." style="width: 50px; height: 50px;">
+            <div class="media-body">
+              <h6>Višina vstopnice (odrasli)</h6>
+              <p><b>{{ location[15] }} €</b></p>
+            </div>
+          </div>
         </div>
       </div>
 

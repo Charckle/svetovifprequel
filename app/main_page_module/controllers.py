@@ -6,6 +6,8 @@ from flask import Blueprint, request, render_template, \
 # Import module forms
 from app.main_page_module.forms import LoginForm, RegisterForm, EditUserForm, LocationForm, ParkingForm, TagForm, MythForm, MTagForm, ImgForm, IconForm
 
+from app.main_page_module.other import remove_https
+
 # Import module models (i.e. User)
 from app.main_page_module.models import user_sql_create, user_sql_login_check, user_sql_get_all, \
      user_sql_get_one, user_sql_delete_one, user_sql_update_one, location_create, location_get_one, location_change, parking_create, \
@@ -682,7 +684,7 @@ def new_location():
         coordinates = form.coord.data
 
         location_id = location_create(form.name.data, form.desc_s.data, form.desc_l.data, form.rating.data, form.tts.data, coordinates.replace(" ", ""), form.mtld.data, form.contact.data,
-                        form.timetable.data, form.fee.data, form.child.data, form.season.data, form.icon.data)
+                        remove_https(form.webpage.data), form.timetable.data, form.fee.data, form.fee_price.data, form.child.data, form.season.data, form.icon.data)
         
         
         
@@ -726,8 +728,10 @@ def edit_location(location_id):
                  coord = location[6].replace(" ", ""),
                  mtld = location[7],
                  contact = location[8],
+                 webpage = location[14],
                  timetable = location[9],
                  fee = location[10],
+                 fee_price = location[15],
                  child = location[11],
                  season = location[12],
                  icon = location[13])
@@ -770,8 +774,10 @@ def change_location():
             
             return redirect(url_for("main_page_module.index"))  
         
-        location_change(location_id, form.name.data, form.desc_s.data, form.desc_l.data, form.rating.data, form.tts.data, form.coord.data, form.mtld.data, form.contact.data, form.timetable.data, form.fee.data, form.child.data,
-                         form.season.data, form.icon.data)
+        webpage = re.sub(r'^https?:\/\/', '', form.webpage.data)
+        
+        location_change(location_id, form.name.data, form.desc_s.data, form.desc_l.data, form.rating.data, form.tts.data, form.coord.data, form.mtld.data, form.contact.data, 
+                        remove_https(form.webpage.data), form.timetable.data, form.fee.data, form.fee_price.data, form.child.data, form.season.data, form.icon.data)
         
         flash('Location successfully Eddited!', 'success')
         

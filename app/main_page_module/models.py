@@ -438,12 +438,12 @@ def icon_create(name, link):
     return icon_id
 
 
-def location_create(name, desc_s, desc_l, rating, tts, coord, mtld, contact, timetable, fee, child, season, icon):
+def location_create(name, desc_s, desc_l, rating, tts, coord, mtld, contact, timetable, fee, fee_price, child, season, icon):
    
-    sql_command = f"""INSERT INTO locations (name, desc_s, desc_l, rating, tts, coord, mtld, contact, timetable, fee, child, season, icon)
-                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
+    sql_command = f"""INSERT INTO locations (name, desc_s, desc_l, rating, tts, coord, mtld, contact, webpage, timetable, fee, fee_price, child, season, icon)
+                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
        
-    cursor = db.query(sql_command, (name, desc_s, desc_l, rating, tts, coord, mtld, contact, timetable, fee, child, season, icon))
+    cursor = db.query(sql_command, (name, desc_s, desc_l, rating, tts, coord, mtld, contact, webpage, timetable, fee, fee_price, child, season, icon))
     db.conn.commit()
     
     location_id = cursor.lastrowid
@@ -559,12 +559,12 @@ def location_get_numbers():
     return result
 
     
-def location_change(location_id, name, desc_s, desc_l, rating, tts, coord, mtld, contact, timetable, fee, child, season, icon):
+def location_change(location_id, name, desc_s, desc_l, rating, tts, coord, mtld, contact, webpage, timetable, fee, fee_price, child, season, icon):
     sql_command = f"""UPDATE locations SET name = %s, desc_s = %s, desc_l = %s, rating = %s, tts = %s, coord = %s, 
-     mtld = %s, contact = %s, timetable = %s, fee = %s, child = %s, season = %s, icon = %s 
+     mtld = %s, contact = %s, webpage = %s, timetable = %s, fee = %s, fee_price = %s, child = %s, season = %s, icon = %s 
      WHERE id = %s;"""
       
-    cursor = db.query(sql_command, (name, desc_s, desc_l, rating, tts, coord, mtld, contact, timetable, fee, child, season, icon, location_id))
+    cursor = db.query(sql_command, (name, desc_s, desc_l, rating, tts, coord, mtld, contact, webpage, timetable, fee, fee_price, child, season, icon, location_id))
     db.conn.commit()
 
 

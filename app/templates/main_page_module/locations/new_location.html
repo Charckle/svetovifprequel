@@ -102,9 +102,18 @@
             {{ render_field(form.coord, placeholder="Insert coordinates") }}
             
             {{ render_field(form.mtld, placeholder="Select a Difficulty") }}
+            {{ render_field(form.webpage, placeholder="Vnesi spletni naslov") }}
             {{ render_field(form.contact, placeholder="Give us a contact") }}
             {{ render_field(form.timetable, placeholder="When can we visit it?", rows='3') }}
-            {{ render_field(form.fee, placeholder="Select if the location has fees.") }}
+            <div class="row">
+              <div class="col-md-6">
+                {{ render_field(form.fee, placeholder="Select if the location has fees.") }}
+              </div>
+  
+              <div class="col-md-6">
+                {{ render_field(form.fee_price, placeholder="Select if the location has fees.") }}
+              </div>
+            </div>
             {{ render_field(form.child, placeholder="Select if the location is suitable for children") }}
             {{ render_field(form.season, placeholder="Select if the location is season/weather dependant") }}
 
