@@ -774,7 +774,7 @@ def change_location():
             
             return redirect(url_for("main_page_module.index"))  
         
-        webpage = re.sub(r'^https?:\/\/', '', form.webpage.data)
+        
         
         location_change(location_id, form.name.data, form.desc_s.data, form.desc_l.data, form.rating.data, form.tts.data, form.coord.data, form.mtld.data, form.contact.data, 
                         remove_https(form.webpage.data), form.timetable.data, form.fee.data, form.fee_price.data, form.child.data, form.season.data, form.icon.data)
