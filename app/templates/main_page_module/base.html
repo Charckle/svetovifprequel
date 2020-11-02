@@ -10,6 +10,11 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <style>
+        html, body {
+            height: calc(100% - 28px);
+            }
+
+            
         .navbar {
             -webkit-box-shadow: 0 8px 6px -6px #999;
             -moz-box-shadow: 0 8px 6px -6px #999;
@@ -24,7 +29,7 @@
 
     <title>Svetovid</title>
   </head>
-    
+
   <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-light">
             <a class="navbar-brand" href="{{ url_for('main_page_module.index') }}">
