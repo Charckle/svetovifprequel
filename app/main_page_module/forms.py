@@ -124,7 +124,7 @@ class LocationForm(FlaskForm):
     fees = [(0, u'Ne'), (1, u'Odvisno'), (2, 'Da')]
     fee  = SelectField('Vstopnina', [validators.InputRequired(message=u'Izberi, ali ima Lokacija vstopnino')], choices=fees, coerce=int)
     
-    fee_price = DecimalField('Cena vstopnine v € (odrasli)', [validators.InputRequired(message='Vnesi višino vstopnine v €')], places=2)
+    fee_price = DecimalField('Cena vstopnine v € (odrasli)', places=2)
     
     childs = [(0, u'Ne'), (1, 'Odvisno'), (2, u'Da')]
     child  = SelectField(u'Ali je Lokacija primerna za otroke', [validators.InputRequired(message=u'Izberi, ali je Lokacija primerna za otroke.')], choices=childs, coerce=int)   
