@@ -65,7 +65,7 @@
           {% if ( all_imgs|length != 0) %}
             {% for i in all_imgs%}
             <div class="carousel-item {% if loop.index == 1 %} active{% endif %}">
-              <img src="{{ i[2] }}" class="d-block w-100" alt="{{ i[1] }}" style="width:640px;height:480px">
+              <img src="{{ i[2] }}" class="d-block w-100" alt="{{ i[1] }}" style="width:100%">
               <div class="carousel-caption d-none d-md-block">
                 <h5>{{ i[1] }}</h5>
               </div>
@@ -73,7 +73,7 @@
             {% endfor %}
           {% else %}
             <div class="carousel-item active ">
-              <img src="{{ url_for('static', filename='background.jpg') }}" class="d-block w-100" alt="..." style="width:640px;height:480px">
+              <img src="{{ url_for('static', filename='background.jpg') }}" class="d-block w-100" alt="..." >
               <div class="carousel-caption d-none d-md-block">
                 <h5>Nobene slike se ni</h5>
               </div>

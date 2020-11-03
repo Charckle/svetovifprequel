@@ -452,7 +452,7 @@ def location_create(name, desc_s, desc_l, rating, tts, coord, mtld, contact, tim
 
 
 def location_get_all():
-    sql_command = f"SELECT locations.id, locations.name, LEFT(locations.desc_s , 100), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN icons ON icons.id = locations.icon LEFT JOIN imgs ON imgs.id_location = locations.id GROUP BY locations.id;"
+    sql_command = f"SELECT locations.id, locations.name, LEFT(locations.desc_s , 100), icons.link, locations.coord, imgs.link FROM locations LEFT JOIN icons ON icons.id = locations.icon LEFT JOIN imgs ON imgs.id_location = locations.id GROUP BY locations.id ORDER BY locations.id DESC;"
     
     cursor = db.query(sql_command, ())
     result = cursor.fetchall()
