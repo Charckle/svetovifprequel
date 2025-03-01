@@ -3,8 +3,8 @@ from os import environ
 
 DB_HOST = environ.get('DB_HOST', "127.0.0.1")
 DB_NAME = environ.get('DB_NAME', "svetovidprequel")
-DB_USERNAME = environ.get('DB_USERNAME', "root")
-DB_PASSWORD = environ.get('DB_PASSWORD', "")
+DB_USERNAME = environ.get('DB_USERNAME', "svetovid")
+DB_PASSWORD = environ.get('DB_PASSWORD', "banana")
 
 
 class Config(object):

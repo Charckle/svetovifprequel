@@ -58,6 +58,7 @@ def check_login():
 @main_page_module.route('/', methods=['GET', 'POST'])
 def index():
     locations = location_get_all()
+
     tags = tag_get_all()
     
     if request.method == "POST":

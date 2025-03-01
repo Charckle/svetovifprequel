@@ -1,12 +1,16 @@
 {% extends "main_page_module/base.html" %}
 
 {% block extraheader %}
-<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/css/ol.css" type="text/css">
-<link rel="stylesheet" href="{{ url_for('static', filename='openlayers/styles.css') }}" type="text/css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 
-
+<style>
+  #map {
+      height: 100%;
+      width: 100%;
+  }
+</style>
 {% endblock extraheader  %}
 
 {% block nav_index %}active{% endblock nav_index %}
@@ -36,243 +40,41 @@
 
 
 {% block content%}
-<div id="js-map" class="map"></div>
-<!--
-<br>
-<div class="container-fluid">
-  <br>  
-
-  
-
-  <div class="row">
-    <div class="col-md-3">
-      <a id="link_to_loc" href="#"><img id="big_image" src="{{ url_for('static', filename='icons/default.svg') }}" class="img-fluid rounded "></a>
-      <hr>
-      <div class="media">
-        <img id="loc_icon_small" src="{{ url_for('static', filename='icons/search.svg') }}" class="mr-3" alt="..." width="64" height="64">
-        <div class="media-body">
-          <a id="link_to_loc_name" href="#"><h5 id="loc_name_h5" class="mt-0">Ime lokacije</h5></a>
-          <p id="loc_desc_p">
-            Opis lokacije
-          </p>
-        </div>
-      </div>
-      <hr>
-
-      <form method="POST" action="{{ url_for('main_page_module.index') }}" accept-charset="UTF-8" role="form">
-        <div class="input-group">
-          <select class="custom-select" name="rating">
-            <option value="99" selected>Vse Ocene</option>
-              <option value="0">1/5 - Če imaš čas, obišči enkrat</option>
-              <option value="1">2/5 - Nič posebnega, vendar lepo za videt</option>
-              <option value="2">3/5 - Vredno ogleda, če imaš čas</option>
-              <option value="3">4/5 - Obišči, ne bo ti žal</option>
-              <option value="4">5/5 - Zelo vredno! Ustavi se in obišči!</option>
-          </select>
-          <select class="custom-select" name="tag">
-            <option value="999999" selected>Vse Oznake</option>
-              {% for tag in tags %}
-              <option value="{{ tag[0] }}">{{ tag[1] }}</option>
-              {% endfor %}
-          </select>
-          <div class="input-group-append">
-            <input type="submit" class="btn btn-outline-secondary" value="Filtriraj">
-          </div>
-        </div>
-      </form>
-
-    </div>
-    <div class="col-md">
-      
-      
-
-
-    </div>
-
-</div>
-
-</div>
-//-->
-
-<!-- Popup -->
-<div id="popup" title=""></div>
-
-<!-- Popover -->
-<div id="popov" class="ol-popov">
-  <a href="#" id="popov-closer" class="ol-popov-closer"></a>
-  <div id="popov-content">banana</div>
-  <a id="link-popov" href="#">
-    <img id="popov-image" src="#" class="img-fluid rounded ">
-  </a>
-</div>
+<div id="map" class="map"></div>
 
 <script>
 
-  const map = new ol.Map({
-    view: new ol.View({
-        center: ol.proj.fromLonLat([14.7385152,46.1240465]),
-        zoom: 8.8
-    }),
-    layers: [
-        new ol.layer.Tile({
-            source: new ol.source.OSM()
-        })
-    ],
-    target: "js-map"
-  })
-
-  //START OVERLAY
-  /**
-  * Elements that make up the Popover.
-  */
-  var container = document.getElementById('popov');
-  var content = document.getElementById('popov-content');
-  var image_pop = document.getElementById('popov-image');
-  var link_pop = document.getElementById('link-popov');
-  var closer = document.getElementById('popov-closer');
-  /**
-   * Create an overlay to anchor the popup to the map.
-   */
-  var overlayz = new ol.Overlay({
-    element: container,
-    autoPan: true,
-    autoPanAnimation: {
-      duration: 250,
-    },
-  });
-
-  /**
-   * Add a click handler to hide the popup.
-   * @return {boolean} Don't follow the href.
-   */
-  closer.onclick = function () {
-    overlayz.setPosition(undefined);
-    closer.blur();
-    return false;
-  };
-
-  map.addOverlay(overlayz);
-  //END OVERLAY
 
 
 
+  var map = L.map('map').setView([46.1240465,14.7385152], 8.5);
+
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+
+  var locations = [
   {% for i in locations%}
-
-  var iconFeature = new ol.Feature({
-    loc_id: "{{ i[0] }}",
-    name: "{{ i[1] }}",
-    desc: "{{ i[2] }}",
-    icon: "{{ i[3] }}",
-    geometry: new ol.geom.Point(ol.proj.fromLonLat([{{ i[4].split(",")[1] }}, {{ i[4].split(",")[0]  }}])),
-    img: "{% if i[5] != None %}{{ i[5] }}{% else %}/static/icons/{{ i[3] }}{% endif %}"
-  });
-
-var iconStyle = new ol.style.Style({
-    image: new ol.style.Icon({
-      anchor: [0.5, 0.5],
-      scale: 0.07,
-      anchorXUnits: 'fraction',
-      anchorYUnits: 'pixels',
-      src: '/static/icons/{{ i[3] }}',
-      //img: getVectorImage('/static/icons/hill.svg', 50),
-      //imgSize: [50, 50]
-    }),
-  });
-  
-  iconFeature.setStyle(iconStyle);
-  
-  var vectorSource = new ol.source.Vector({
-    features: [iconFeature],
-  });
-  
-  var vectorLayer = new ol.layer.Vector({
-    source: vectorSource,
-  });
-
-
-  map.addLayer(vectorLayer);
+    { lat: {{ i[4].split(",")[0] }}, lng: {{  i[4].split(",")[1]  }}, text: "{{ i[1] }}", desc: "{{ i[2] }}", link: "{{ url_for("main_page_module.view_location", location_id=i[0]) }} ", icon: "{{ i[3] }}" },
   {% endfor %}
+  ];
 
+  locations.forEach(function(location) {
+    var customIcon = L.icon({
+        iconUrl: "/static/icons/" + location.icon,  // Use the location-specific icon
+        iconSize: [45, 45],  // Adjust size as needed
+        iconAnchor: [22, 45], 
+        popupAnchor: [0, -45] 
+    });
 
-  // Popup showing the position the user clicked
-  var popup = new ol.Overlay({
-    element: document.getElementById('popup'),
-  });
-  map.addOverlay(popup);
+    var marker = L.marker([location.lat, location.lng], { icon: customIcon }).addTo(map);
+    marker.bindPopup(`<b>${location.text}</b><br><a href='${location.link}' target='_blank'>${location.desc}</a>`);
+});
 
-  map.on('pointermove', function(evt){
-    let isFeatureAtPixel = map.hasFeatureAtPixel(evt.pixel);
-    var element = popup.getElement();
+  
 
-    if(isFeatureAtPixel){
-      let featureAtPixel = map.getFeaturesAtPixel(evt.pixel);
-      let featureName = featureAtPixel[0].get('name');
-      //popoverTextLayer.setPosition(evt.coordinate);
-      //popoverTextElement.innerHTML = featureName;
-
-      popup.setPosition(evt.coordinate);
-      $(element).popover({
-        container: element,
-        placement: 'top',
-        animation: false,
-        html: true,
-        title: featureName,
-        //content: '<p>' + featureName + '</p>'
-      });
-      $(element).popover('show');
-      map.getViewport().style.cursor = 'pointer'
-    } else {
-      //popoverTextLayer.setPosition(undefined);
-      $(element).popover('dispose');
-      map.getViewport().style.cursor = ''
-    }
-  })
-
-  //map click logic
-  const locationBigImage = document.getElementById('big_image');
-  const locationLink = document.getElementById('link_to_loc');
-  const locationNameLink = document.getElementById('link_to_loc_name');
-  const locationIcon = document.getElementById('loc_icon_small');
-  const locationName = document.getElementById('loc_name_h5');
-  const locationDesc = document.getElementById('loc_desc_p');
-  const mapView = map.getView();
-
-  map.on('singleclick', function(evt){
-
-    map.forEachFeatureAtPixel(evt.pixel, function(feature, layer){
-      //console.log(feature);
-      mainLogic(feature, evt)
-    })
-  })
-
-  function mainLogic(feature, evt){
-    let featureId = feature.get('loc_id')
-    let featureName = feature.get('name')
-    let featureDesc = feature.get('desc')
-    let featureIcon = feature.get('icon')
-    let featureImg = feature.get('img')
-
-    //popup START
-    var coordinate = evt.coordinate;
-    var hdms = ol.coordinate.toStringHDMS(ol.proj.toLonLat(coordinate));
-
-    content.innerHTML = '<h5>' + featureName + '</h5>';
-    image_pop.setAttribute('src', featureIcon);
-    image_pop.setAttribute('src', featureImg);
-    link_pop.setAttribute('href', '/view_location/' + featureId);
-    overlayz.setPosition(coordinate);
-    // popup STOP
-    
-    /*
-    //console.log(featureImg);
-    locationBigImage.setAttribute('src', featureImg);
-    locationLink.setAttribute('href', '/view_location/' + featureId);
-    locationNameLink.setAttribute('href', '/view_location/' + featureId);
-    locationIcon.setAttribute('src', '/static/icons/' + featureIcon);
-    locationName.textContent = featureName;
-    locationDesc.textContent = featureDesc;
-    */
-  }
 
 </script>
 {% endblock content %}
