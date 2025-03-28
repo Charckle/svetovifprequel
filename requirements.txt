@@ -4,7 +4,7 @@ Flask-WTF==0.14.3
 gunicorn==23.0.0
 itsdangerous==1.1.0
 Jinja2==3.1.6
-MarkupSafe==1.1.1
+MarkupSafe==3.0.2¸
 mysql-connector-python==8.0.21
 mysqlclient==2.0.1
 protobuf==3.13.0
