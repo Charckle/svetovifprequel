@@ -8,7 +8,11 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
+RUN adduser -D -u 1000 appuser
+
 COPY . /app
+
+USER appuser
 
 ENTRYPOINT [ "gunicorn" ]
 
